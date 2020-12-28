@@ -241,14 +241,14 @@ $(function () {
             inputStream: {
                 type: "LiveStream",
                 constraints: {
-                    width: { min: 500 },
-                    height: { min: 500 },
+                    width: { min: 1280 },
+                    height: { min: 720 },
                     facingMode: "environment",
                     aspectRatio: { min: 1, max: 2 }
                 }
             },
             locator: {
-                patchSize: "large",
+                patchSize: "medium",
                 halfSample: true
             },
             numOfWorkers: 1,
