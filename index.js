@@ -390,281 +390,281 @@ function setup() {
     //     playBtn.size(windowWidth * 0.38, 30);
     //     playBtn.style('font-size', '20px');
     //     playBtn.mousePressed(playSeq);
+}
+
+function draw() {
+    //alston. here is to play the whole seq
+    if (autoplay && millis() > trigger) {
+        playNote(note[index], duration[index]);
+        trigger = millis() + duration[index];
+        index++;
+    } else if (index >= note.length) {
+        autoplay = false;
+        index = 0;
+    }
+
+    newDetection();
+    if (detected_result != 0 && new_detection) {
+        console.log(detected_result);
+        background(240);
+        textSize(20);
+        textAlign(CENTER);
+        text("Last Detected: " + detected_result, 0, 10, windowWidth);
+        mainInput.value(detected_result);
+        updateInput();
+    }
+}
+
+function newDetection() {
+    if (detected_result == last_detection) {
+        new_detection = false;
+    } else {
+        new_detection = true;
+        last_detection = detected_result;
+    }
+}
+
+function updateInput() {
+    // mainSeq = mainInput.value();
+    mainSeq = detected_result;
+
+    b1Seq = b1Input.value();
+    b2Seq = b2Input.value();
+    b3Seq = b3Input.value();
+    b4Seq = b4Input.value();
+    note = [];
+    duration = [];
+    volume = [];
+    melodySeq = [];
+
+    print("THE INPUT SEQUENCE : ");
+    print(mainSeq);
+    if (b1Seq != "") {
+        print("Branch 1 : " + b1Seq);
+    }
+    if (b2Seq != "") {
+        print("Branch 2 : " + b2Seq);
+    }
+    if (b3Seq != "") {
+        print("Branch 3 : " + b3Seq);
+    }
+    if (b4Seq != "") {
+        print("Branch 4 : " + b4Seq);
+    }
+    Convert();
+}
+
+function Convert() {
+    if (!mainSeq.includes("(")) {
+        rawSplitSt = split(mainSeq, " ");
+        for (var i = 0; i < rawSplitSt.length; i++) {
+            if (rawSplitSt[i].includes("a") || rawSplitSt[i].includes("b") || rawSplitSt[i].includes("c") || rawSplitSt[i].includes("d")) {
+                detectSwitch(rawSplitSt[i]);
+            } else {
+                rawSplit = int(rawSplitSt[i]);
+                getSeq(rawSplit);
+            }
+        }
+    }
+    else {
+        raw = ConvertMethod2(mainSeq);
+        rawSplitSt = split(raw, " ");
+        for (var i = 0; i < rawSplitSt.length; i++) {
+            if (rawSplitSt[i].includes("a") || rawSplitSt[i].includes("b") || rawSplitSt[i].includes("c") || rawSplitSt[i].includes("d")) {
+                detectSwitch(rawSplitSt[i]);
+            } else {
+                rawSplit = int(rawSplitSt[i]);
+                getSeq(rawSplit);
+            }
+        }
+    }
+    print("PLAYED : " + melodySeq.length + " Notes.");
+    // print("OUTPUTS: ");
+    // for (var i = 0; i < melodySeq.length; i++) {
+    //   print(melodySeq[i]);
     // }
 
-    function draw() {
-        //alston. here is to play the whole seq
-        if (autoplay && millis() > trigger) {
-            playNote(note[index], duration[index]);
-            trigger = millis() + duration[index];
-            index++;
-        } else if (index >= note.length) {
-            autoplay = false;
-            index = 0;
-        }
+}
 
-        newDetection();
-        if (detected_result != 0 && new_detection) {
-            console.log(detected_result);
-            background(240);
-            textSize(20);
-            textAlign(CENTER);
-            text("Last Detected: " + detected_result, 0, 10, windowWidth);
-            mainInput.value(detected_result);
-            updateInput();
-        }
-    }
-
-    function newDetection() {
-        if (detected_result == last_detection) {
-            new_detection = false;
-        } else {
-            new_detection = true;
-            last_detection = detected_result;
-        }
-    }
-
-    function updateInput() {
-        // mainSeq = mainInput.value();
-        mainSeq = detected_result;
-
-        b1Seq = b1Input.value();
-        b2Seq = b2Input.value();
-        b3Seq = b3Input.value();
-        b4Seq = b4Input.value();
-        note = [];
-        duration = [];
-        volume = [];
-        melodySeq = [];
-
-        print("THE INPUT SEQUENCE : ");
-        print(mainSeq);
-        if (b1Seq != "") {
-            print("Branch 1 : " + b1Seq);
-        }
-        if (b2Seq != "") {
-            print("Branch 2 : " + b2Seq);
-        }
-        if (b3Seq != "") {
-            print("Branch 3 : " + b3Seq);
-        }
-        if (b4Seq != "") {
-            print("Branch 4 : " + b4Seq);
-        }
-        Convert();
-    }
-
-    function Convert() {
-        if (!mainSeq.includes("(")) {
-            rawSplitSt = split(mainSeq, " ");
-            for (var i = 0; i < rawSplitSt.length; i++) {
-                if (rawSplitSt[i].includes("a") || rawSplitSt[i].includes("b") || rawSplitSt[i].includes("c") || rawSplitSt[i].includes("d")) {
-                    detectSwitch(rawSplitSt[i]);
-                } else {
-                    rawSplit = int(rawSplitSt[i]);
-                    getSeq(rawSplit);
+//Kexin recursively process the string
+function ConvertMethod2(str) {
+    var bIndex = [];
+    var repeatIdx = [];
+    var nestloopIdx = [];
+    var outputStr;
+    var appendStr = [];
+    var hasNest = false;
+    //find position of ()
+    // print(str.length);
+    for (var i = 0; i < str.length; i++) {
+        var theChar = str.charAt(i);
+        // print("visited");
+        // print(theChar);
+        if (theChar == '(') {
+            bIndex.push(i);
+            var contains = false;
+            for (var j = i + 1; j < str.length; j++) {
+                if (str.charAt(j) == '(') {
+                    contains = true;
+                }
+                else if (str.charAt(j) == ')') {
+                    if (contains) { contains = false; if (!nestloopIdx.includes(i)) nestloopIdx.push(i); hasNest = true; }
+                    else {
+                        bIndex.push(j);
+                        repeatIdx.push(str.charAt(j + 2));
+                        i = j + 1;
+                        break;
+                    }
                 }
             }
+        }
+    }
+
+    if (bIndex[0] > 0) appendStr.push(str.substring(0, bIndex[0]));
+    for (var i = 0; i < bIndex.length; i = i + 2) {
+        //if(hasNest){
+        if (nestloopIdx.includes(bIndex[i])) {
+            var loopStr = ProcessLoop(str.substring(bIndex[i] + 1, bIndex[i + 1]), repeatIdx[i / 2]);
+            appendStr.push(ConvertMethod2(loopStr));
         }
         else {
-            raw = ConvertMethod2(mainSeq);
-            rawSplitSt = split(raw, " ");
-            for (var i = 0; i < rawSplitSt.length; i++) {
-                if (rawSplitSt[i].includes("a") || rawSplitSt[i].includes("b") || rawSplitSt[i].includes("c") || rawSplitSt[i].includes("d")) {
-                    detectSwitch(rawSplitSt[i]);
-                } else {
-                    rawSplit = int(rawSplitSt[i]);
-                    getSeq(rawSplit);
-                }
-            }
-        }
-        print("PLAYED : " + melodySeq.length + " Notes.");
-        // print("OUTPUTS: ");
-        // for (var i = 0; i < melodySeq.length; i++) {
-        //   print(melodySeq[i]);
-        // }
-
-    }
-
-    //Kexin recursively process the string
-    function ConvertMethod2(str) {
-        var bIndex = [];
-        var repeatIdx = [];
-        var nestloopIdx = [];
-        var outputStr;
-        var appendStr = [];
-        var hasNest = false;
-        //find position of ()
-        // print(str.length);
-        for (var i = 0; i < str.length; i++) {
-            var theChar = str.charAt(i);
-            // print("visited");
-            // print(theChar);
-            if (theChar == '(') {
-                bIndex.push(i);
-                var contains = false;
-                for (var j = i + 1; j < str.length; j++) {
-                    if (str.charAt(j) == '(') {
-                        contains = true;
-                    }
-                    else if (str.charAt(j) == ')') {
-                        if (contains) { contains = false; if (!nestloopIdx.includes(i)) nestloopIdx.push(i); hasNest = true; }
-                        else {
-                            bIndex.push(j);
-                            repeatIdx.push(str.charAt(j + 2));
-                            i = j + 1;
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-
-        if (bIndex[0] > 0) appendStr.push(str.substring(0, bIndex[0]));
-        for (var i = 0; i < bIndex.length; i = i + 2) {
-            //if(hasNest){
-            if (nestloopIdx.includes(bIndex[i])) {
-                var loopStr = ProcessLoop(str.substring(bIndex[i] + 1, bIndex[i + 1]), repeatIdx[i / 2]);
-                appendStr.push(ConvertMethod2(loopStr));
-            }
-            else {
-                // var loopStr = ProcessLoop(str.substring(bIndex[i] + 1, bIndex[i + 1]), repeatIdx[i / 2]);
-                var loopStr = ProcessLoop(str.substring(bIndex[i] + 1, bIndex[i + 1]), repeatIdx[i / 2]);
-                // print(loopStr);
-                appendStr.push(loopStr);
-            }
-            if (i + 2 < bIndex.length) appendStr.push(str.substring(bIndex[i + 1] + 3, bIndex[i + 2]));//if have other () behind
-            else if (bIndex[i + 1] + 3 < str.length) appendStr.push(str.substring(bIndex[i + 1] + 3, str.length));
-        }
-        // for (var i = 0; i < appendStr.length; i++) {
-        //   print("brackets: " + appendStr[i]);
-        // }
-
-        outputStr = appendStr.join("");
-        // print(outputStr);
-        return outputStr;
-    }
-
-    //Kexin repeat the loop string
-    function ProcessLoop(loopStr, repeatTime) {
-        var outputStr;
-        var appendStr = [];
-        for (var i = 0; i < repeatTime; i++) {
+            // var loopStr = ProcessLoop(str.substring(bIndex[i] + 1, bIndex[i + 1]), repeatIdx[i / 2]);
+            var loopStr = ProcessLoop(str.substring(bIndex[i] + 1, bIndex[i + 1]), repeatIdx[i / 2]);
+            // print(loopStr);
             appendStr.push(loopStr);
         }
-        outputStr = appendStr.join();
-        return outputStr;
+        if (i + 2 < bIndex.length) appendStr.push(str.substring(bIndex[i + 1] + 3, bIndex[i + 2]));//if have other () behind
+        else if (bIndex[i + 1] + 3 < str.length) appendStr.push(str.substring(bIndex[i + 1] + 3, str.length));
     }
+    // for (var i = 0; i < appendStr.length; i++) {
+    //   print("brackets: " + appendStr[i]);
+    // }
 
-    //alston. the following functions are for switch functions. 
-    function detectSwitch(branchID) {
-        //alston. not using "else if" in case switches don't come in pair 20201105
-        switch (branchID) {
-            case ("a"):
-                if (b1Seq != "") {
-                    InsertSwitch(b1Seq);
-                } else {
-                    print("BRANCH 1 HAS NO INPUTS");
-                }
-                break;
-            case ("b"):
-                if (b2Seq != "") {
-                    InsertSwitch(b2Seq);
-                } else {
-                    print("BRANCH 2 HAS NO INPUTS");
-                }
-                break;
-            case ("c"):
-                if (b3Seq != "") {
-                    InsertSwitch(b3Seq);
-                } else {
-                    print("BRANCH 3 HAS NO INPUTS");
-                }
-                break;
-            case ("d"):
-                if (b4Seq != "") {
-                    InsertSwitch(b4Seq);
-                } else {
-                    print("BRANCH 4 HAS NO INPUTS");
-                }
-                break;
-        }
+    outputStr = appendStr.join("");
+    // print(outputStr);
+    return outputStr;
+}
+
+//Kexin repeat the loop string
+function ProcessLoop(loopStr, repeatTime) {
+    var outputStr;
+    var appendStr = [];
+    for (var i = 0; i < repeatTime; i++) {
+        appendStr.push(loopStr);
     }
+    outputStr = appendStr.join();
+    return outputStr;
+}
 
-    function InsertSwitch(str) {
-        var strSplit = [];
-        var intSplit;
-
-        if (!str.includes("(")) {
-            strSplit = split(str, " ");
-            for (var i = 0; i < strSplit.length; i++) {
-                intSplit = int(strSplit[i]);
-                getSeq(intSplit);
+//alston. the following functions are for switch functions. 
+function detectSwitch(branchID) {
+    //alston. not using "else if" in case switches don't come in pair 20201105
+    switch (branchID) {
+        case ("a"):
+            if (b1Seq != "") {
+                InsertSwitch(b1Seq);
+            } else {
+                print("BRANCH 1 HAS NO INPUTS");
             }
-        }
-        else {
-            str = ConvertMethod2(str);
-            strSplit = split(str, " ");
-            // printArray(strSplit);
-            for (var i = 0; i < strSplit.length; i++) {
-                intSplit = int(strSplit[i]);
-                getSeq(intSplit);
+            break;
+        case ("b"):
+            if (b2Seq != "") {
+                InsertSwitch(b2Seq);
+            } else {
+                print("BRANCH 2 HAS NO INPUTS");
             }
+            break;
+        case ("c"):
+            if (b3Seq != "") {
+                InsertSwitch(b3Seq);
+            } else {
+                print("BRANCH 3 HAS NO INPUTS");
+            }
+            break;
+        case ("d"):
+            if (b4Seq != "") {
+                InsertSwitch(b4Seq);
+            } else {
+                print("BRANCH 4 HAS NO INPUTS");
+            }
+            break;
+    }
+}
+
+function InsertSwitch(str) {
+    var strSplit = [];
+    var intSplit;
+
+    if (!str.includes("(")) {
+        strSplit = split(str, " ");
+        for (var i = 0; i < strSplit.length; i++) {
+            intSplit = int(strSplit[i]);
+            getSeq(intSplit);
         }
-
     }
-
-    //alston. the following functions are for playing note sequence.
-    function getSeq(digits) {
-        volume.push(100);
-        let noteDua, noteCode;
-        noteDua = int(digits % 10);
-        noteCode = int(digits / 10);
-        switch (noteDua) {
-            case (1): duration.push(300); break;
-            case (2): duration.push(600); break;
-            case (3): duration.push(900); break;
-            case (4): duration.push(1200); break;
-        }
-        switch (noteCode) {
-            case (1): note.push(60); melodySeq.push(1); break;
-            case (2): note.push(62); melodySeq.push(2); break;
-            case (3): note.push(64); melodySeq.push(3); break;
-            case (4): note.push(65); melodySeq.push(4); break;
-            case (5): note.push(67); melodySeq.push(5); break;
-            case (6): note.push(69); melodySeq.push(6); break;
-            case (7): note.push(71); melodySeq.push(7); break;
-            case (8): note.push(72); melodySeq.push(8); break;
+    else {
+        str = ConvertMethod2(str);
+        strSplit = split(str, " ");
+        // printArray(strSplit);
+        for (var i = 0; i < strSplit.length; i++) {
+            intSplit = int(strSplit[i]);
+            getSeq(intSplit);
         }
     }
 
-    function playSeq() {
-        // console.log(note.length);
-        for (var i = 0; i < note.length; i++) {
-            console.log(note[i] + " " + duration[i]);
-        }
-        autoplay = true;
-        //alston. playing seq is conducted inside draw()
+}
+
+//alston. the following functions are for playing note sequence.
+function getSeq(digits) {
+    volume.push(100);
+    let noteDua, noteCode;
+    noteDua = int(digits % 10);
+    noteCode = int(digits / 10);
+    switch (noteDua) {
+        case (1): duration.push(300); break;
+        case (2): duration.push(600); break;
+        case (3): duration.push(900); break;
+        case (4): duration.push(1200); break;
     }
-
-    // Alternative function to play a note
-
-
-    function testSound() {
-        playNote2(1047, 'sine');
+    switch (noteCode) {
+        case (1): note.push(60); melodySeq.push(1); break;
+        case (2): note.push(62); melodySeq.push(2); break;
+        case (3): note.push(64); melodySeq.push(3); break;
+        case (4): note.push(65); melodySeq.push(4); break;
+        case (5): note.push(67); melodySeq.push(5); break;
+        case (6): note.push(69); melodySeq.push(6); break;
+        case (7): note.push(71); melodySeq.push(7); break;
+        case (8): note.push(72); melodySeq.push(8); break;
     }
+}
 
-    function playNote2(frequency, type) {
-
-        o = context.createOscillator();
-        g = context.createGain();
-        o.type = 'sine';
-        o.connect(g);
-        o.frequency.value = 293.67;
-        g.connect(context.destination);
-        g.gain.exponentialRampToValueAtTime(0.00001, context.currentTime + 2)
-        o.start(0);
+function playSeq() {
+    // console.log(note.length);
+    for (var i = 0; i < note.length; i++) {
+        console.log(note[i] + " " + duration[i]);
     }
+    autoplay = true;
+    //alston. playing seq is conducted inside draw()
+}
+
+// Alternative function to play a note
+
+
+function testSound() {
+    playNote2(1047, 'sine');
+}
+
+function playNote2(frequency, type) {
+
+    o = context.createOscillator();
+    g = context.createGain();
+    o.type = 'sine';
+    o.connect(g);
+    o.frequency.value = 293.67;
+    g.connect(context.destination);
+    g.gain.exponentialRampToValueAtTime(0.00001, context.currentTime + 2)
+    o.start(0);
+}
 
 // function testhhh() {
 //     g.gain.exponentialRampToValueAtTime(1.0, context.currentTime + 1);
