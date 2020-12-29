@@ -336,6 +336,10 @@ let trigger = 0;
 let index = 0;
 let autoplay = false;
 
+var context = new AudioContext();
+var o = null;
+var g = null;
+
 function setup() {
     // var w = window.innerWidth;
     // console.log("innerWidth " + w);
@@ -375,11 +379,11 @@ function setup() {
     b4Input.size(windowWidth * 0.8, 30);
     b4Input.position(windowWidth * 0.1, 525);
 
-    // updateBtn = createButton('Update');
-    // updateBtn.position(windowWidth * 0.1, 590);
-    // updateBtn.size(windowWidth * 0.38, 30);
-    // updateBtn.style('font-size', '20px');
-    // updateBtn.mousePressed(updateInput);
+    updateBtn = createButton('Update');
+    updateBtn.position(windowWidth * 0.1, 590);
+    updateBtn.size(windowWidth * 0.38, 30);
+    updateBtn.style('font-size', '20px');
+    updateBtn.mousePressed(testSound);
 
     playBtn = createButton('Play');
     playBtn.position(windowWidth * 0.52, 590);
@@ -643,24 +647,23 @@ function playSeq() {
     //alston. playing seq is conducted inside draw()
 }
 
-// A function to play a note
-function playNote(note, duration) {
-    osc.freq(midiToFreq(note));
-    // Fade it in
-    osc.fade(1, 0);
+// Alternative function to play a note
 
-    // If we sest a duration, fade it out
-    if (duration) {
-        setTimeout(function () {
-            osc.fade(0, 0);
-        }, duration - 100);
-    }
+
+function testSound() {
+    playNote2(1047, 'sine');
 }
 
-//to avoid no audio on mobile browers
-function touchStarted() {
-    if (getAudioContext().state !== 'running') {
-        getAudioContext().resume();
-    }
+function playNote2(frequency, type) {
+
+    o = context.createOscillator();
+    g = context.createGain();
+    o.type = 'sine';
+    o.connect(g);
+    o.frequency.value = 293.67;
+    g.connect(context.destination);
+    o.start(0);
+    g.gain.exponentialRampToValueAtTime(0.00001, context.currentTime + 1)
+
 
 }
