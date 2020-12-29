@@ -664,7 +664,7 @@ function playNote2(frequency, type) {
     g.connect(context.destination);
     o.start(0);
     var currentTimeStamp = context.currentTime;
-    g.gain.exponentialRampToValueAtTime(0.00001, currentTimeStamp + 1)
+    g.gain.linearRampToValueAtTime(0.00001, currentTimeStamp + 0.5)
 
 
 }
