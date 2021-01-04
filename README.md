@@ -7,7 +7,5 @@ Scan one barcode each time.
 **21** 1-7 for notes, 1-4 for duration.<br>
 **LS4** 'LS' for loop start, 1-4 for loop iteration.<br>
 **LE** 'LE' for loop end.<br>
-**SS CAT** 'SS' for switch start, CAT for cat, HT for heart, TH for thunder, MN for moon, SN for sun, SR for star<br>
-**SE CAT** 'SE' for switch start, CAT for cat, HT for heart, TH for thunder, MN for moon, SN for sun, SR for star<br>
-
-Test on SCM Mac
+**SS CAT** 'SS' for switch start, CT for cat, HT for heart, TH for thunder, MN for moon, SN for sun, SR for star<br>
+**SE CAT** 'SE' for switch start, CT for cat, HT for heart, TH for thunder, MN for moon, SN for sun, SR for star<br>

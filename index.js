@@ -558,7 +558,6 @@ function ProcessLoop(loopStr, repeatTime) {
 
 //alston. the following functions are for switch functions. 
 function detectSwitch(branchID) {
-    //alston. not using "else if" in case switches don't come in pair 20201105
     switch (branchID) {
         case ("a"):
             if (b1Seq != "") {
@@ -667,5 +666,96 @@ function playNote2(frequency, type) {
 }
 
 // function testhhh() {
-//     g.gain.exponentialRampToValueAtTime(1.0, context.currentTime + 1);
-// }
+//     g.gain.exponentialRampToValueAtTime(1.0, context.currentTime + 1);// }
+
+
+var notes = [];
+var durations = [];
+var loops
+
+function ProcessLoop(loopStr, iterations) {
+    var outputStr;
+    var appendStr = [];
+    for (var i = 0; i < iterations; i++) {
+        appendStr.push(loopStr);
+    }
+    outputStr = appendStr.join();
+    return outputStr;
+}
+
+
+var catSeq = [];
+var heartSeq = [];
+var thunderSeq = [];
+var moonSeq = [];
+var sunSeq = [];
+var starSeq = [];
+
+
+function branchesNotes(branchID, swNotes) {
+    switch (branchID) {
+        case ("CT"):
+            catSeq = catSeq + swNotes;
+            mainSeq = mainSeq + " CT ";
+            break;
+        case ("HT"):
+            heartSeq = heartSeq + swNotes;
+            mainSeq = mainSeq + " HT ";
+            break;
+        case ("TH"):
+            thunderSeq = thunderSeq + swNotes;
+            mainSeq = mainSeq + " TH ";
+            break;
+        case ("MN"):
+            moonSeq = moonSeq + swNotes;
+            mainSeq = mainSeq + " MN ";
+            break;
+        case ("SN"):
+            sunSeq = sunSeq + swNotes;
+            mainSeq = mainSeq + " SN ";
+            break;
+        case ("SR"):
+            starSeq = starSeq + swNotes;
+            mainSeq = mainSeq + " SR ";
+            break;
+    }
+}
+
+
+function extractSwitchSeq(inputSeq) {
+    var switchStartIndex = inputSeq.indexOf("SS CT") + 6;
+    var switchEndIndex = inputSeq.indexOf("SE CT") - 2;
+    var switchStr = inputSeq.slice(switchStartIndex, switchEndIndex + 1);
+
+    return switchStr;
+}
+
+if (detected_result.includes("SS")) {
+    var branchID = detected_result.slice(3, 6);
+    switch (branchID) {
+        case ("CT"):
+
+            break;
+    }
+}
+
+function errors(errorCode) {
+    switch (errorCode) {
+        case (0):
+            console.log("Switch is not complete! Please scan barcode on the blocks again.");
+            break;
+        case (1):
+            console.log("Loop is not complete! Please scan barcode on the blocks again.");
+            break;
+        case (2):
+            console.log("Empty Switch/Loop Blocks!");
+            break;
+        // case (3):
+        //     console.log("Switch is not complete!");
+        //     break;
+        // case (4):
+        //     console.log("Switch is not complete!");
+        //     break;
+    }
+}
+
