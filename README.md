@@ -1,6 +1,8 @@
 This is for CodeRhythm User Study.
 For Research Purpose Only.
 
+Code128 accepted only.
+
 Scan one barcode each time. 
 ### Symbols for blocks:
 **INT** 'INT' for play block.<br>

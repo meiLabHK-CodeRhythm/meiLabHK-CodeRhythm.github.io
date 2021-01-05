@@ -647,9 +647,7 @@ function playSeq() {
     //alston. playing seq is conducted inside draw()
 }
 
-// Alternative function to play a note
-
-
+// Alternative function to play a note with web audio api
 function testSound() {
     playNote2(1047, 'sine');
 }
@@ -666,6 +664,81 @@ function playNote2(frequency, type) {
     o.start(0);
 }
 
-// function testhhh() {
-//     g.gain.exponentialRampToValueAtTime(1.0, context.currentTime + 1);
-// }
+var loop_itr = 0;
+var cat_branch = false;
+var heart_branch = false;
+var thunder_branch = false;
+var moon_branch = false;
+var sun_branch = false;
+var star_branch = false;
+
+function detectBlock(scanned_str) {
+    var regExp = /[a-zA-Z]/g;
+    if (!regExp.test("haha")) {
+        var note_midi = scanned_str.charAt(0);
+        var note_dur = scanned_str.charAt(1);
+        convertNoteMIDI(note_midi);
+        convertNoteDur(note_dur);
+    } else {
+        if (scanned_str.includes('LS')) {
+            loop_itr = scanned_str.charAt(2);
+            // detected_block =
+        } else if (scanned_str.includes('SS')) {
+            var branch_index = scanned_str.slice(3, 5);
+            switch (branch_index) {
+                case ("CAT"):
+                    cat_branch = true;
+                    break;
+                case ("HT"):
+                    heart_branch = true;
+                    break;
+                case ("TH"):
+                    thunder_branch = true;
+                    break;
+                case ("MN"):
+                    moon_branch = true;
+                    break;
+                case ("SN"):
+                    sun_branch = true;
+                    break;
+                case ("SR"):
+                    star_branch = true;
+                    break;
+            }
+        } else if (scanned_str.includes('SE')) {
+            resetBranch();
+
+        }
+    }
+}
+
+function convertNoteMIDI(inputs) {
+    switch (inputs) {
+        case (1): note.push(261.63); melodySeq.push(1); break;
+        case (2): note.push(293.67); melodySeq.push(2); break;
+        case (3): note.push(64); melodySeq.push(3); break;
+        case (4): note.push(65); melodySeq.push(4); break;
+        case (5): note.push(67); melodySeq.push(5); break;
+        case (6): note.push(69); melodySeq.push(6); break;
+        case (7): note.push(71); melodySeq.push(7); break;
+        case (8): note.push(72); melodySeq.push(8); break;
+    }
+}
+
+function convertNoteDur(inputs) {
+    switch (inputs) {
+        case (1): duration.push(300); break;
+        case (2): duration.push(600); break;
+        case (3): duration.push(900); break;
+        case (4): duration.push(1200); break;
+    }
+}
+
+function resetBranch() {
+    cat_branch = false;
+    heart_branch = false;
+    thunder_branch = false;
+    moon_branch = false;
+    sun_branch = false;
+    star_branch = false;
+}
