@@ -11,3 +11,5 @@ Scan one barcode each time.
 **LE** 'LE' for loop end.<br>
 **SS CAT** 'SS' for switch start, CAT for cat, HT for heart, TH for thunder, MN for moon, SN for sun, SR for star<br>
 **SE CAT** 'SE' for switch start, CAT for cat, HT for heart, TH for thunder, MN for moon, SN for sun, SR for star<br>
+
+Test on SCM Mac
