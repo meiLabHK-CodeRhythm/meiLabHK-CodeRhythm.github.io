@@ -1,4 +1,4 @@
-var detected_result = 0;
+var detected_result = "";
 var new_detection = false;
 var last_detection = 0;
 
@@ -294,17 +294,18 @@ $(function () {
     Quagga.onDetected(function (result) {
         var code = result.codeResult.code;
 
-        if (App.lastResult !== code) {
-            App.lastResult = code;
-            var $node = null, canvas = Quagga.canvas.dom.image;
+        //alston. ALLOW SAME RESULTS
+        // if (App.lastResult !== code) {
+        App.lastResult = code;
+        var $node = null, canvas = Quagga.canvas.dom.image;
 
-            $node = $('<li><div class="thumbnail"><div class="imgWrapper"><img /></div><div class="caption"><h4 class="code"></h4></div></div></li>');
-            // $node.find("img").attr("src", canvas.toDataURL());
-            $node.find("h4.code").html(code);
-            // console.log(code);
-            detected_result = code;
-            $("#result_strip ul.thumbnails").prepend($node);
-        }
+        $node = $('<li><div class="thumbnail"><div class="imgWrapper"><img /></div><div class="caption"><h4 class="code"></h4></div></div></li>');
+        // $node.find("img").attr("src", canvas.toDataURL());
+        $node.find("h4.code").html(code);
+        // console.log(code);
+        detected_result = code;
+        $("#result_strip ul.thumbnails").prepend($node);
+        // }
     });
 
 });
@@ -324,6 +325,7 @@ var osc;
 var rawSplit;
 var rawSplitSt = [];
 var note = [], duration = [], volume = [], melodySeq = [];
+let testSeq = [];
 
 let main_focused = false;
 let b1_focused = false;
@@ -354,6 +356,7 @@ let ct_str = "", ht_str = "", th_str = "", mn_str = "", sn_str = "", sr_str = ""
 let error_exist = false;
 let error_msg = "";
 let clear = true;
+let BLOCKS_DETECTED = 0;
 
 function setup() {
     // var w = window.innerWidth;
@@ -367,45 +370,63 @@ function setup() {
     osc.start();
     osc.amp(0);
 
-    addBlockBtn = createButton('Add Block');
+    addBlockBtn = createButton('ADD BLOCK 添加');
     addBlockBtn.position(windowWidth * 0.1, 390);
     addBlockBtn.size(windowWidth * 0.38, 30);
-    addBlockBtn.style('font-size', '20px');
+    addBlockBtn.style('font-size', '18px');
+    // addBlockBtn.style('Font Style Bold');
     addBlockBtn.mousePressed(Addnewblocks);
 
-    endBtn = createButton('Play');
+    endBtn = createButton('PLAY 播放');
     endBtn.position(windowWidth * 0.52, 390);
     endBtn.size(windowWidth * 0.38, 30);
-    endBtn.style('font-size', '20px');
+    endBtn.style('font-size', '18px');
     endBtn.mousePressed(PrintSeq);
 
-    clearBtn = createButton('Clear');
+    clearBtn = createButton('CLEAR 清空');
     clearBtn.position(windowWidth * 0.52, 340);
     clearBtn.size(windowWidth * 0.38, 30);
-    clearBtn.style('font-size', '20px');
+    clearBtn.style('font-size', '18px');
     clearBtn.mousePressed(ClearInput);
 }
 
 function draw() {
 
-    if (clear && !detected_result) {
+    if (clear) {
         background(240);
         textSize(15);
         textAlign(CENTER);
         textStyle(BOLD);
-        text("Please Scan Blocks To Start", 0, 10, windowWidth);
+        text("Please Scan Blocks To Start\n請掃描條形碼", 0, 10, windowWidth);
     }
 
     // NewDetection();
-    if (detected_result != 0 && addnewblock) {
-        // console.log(detected_result);
+    if (detected_result != "" && !addnewblock) {
+        let isnum = /^\d+$/.test(detected_result);
+        if (isnum) {
+            let testNote = Number(String(detected_result).charAt(0));
+            let testDur = Number(String(detected_result).charAt(1));
+            // TestSound(testNote, testDur);
+            if (millis() > detectInterval) {
+                detectInterval = millis() + 2000;
+                TestSound(testNote, testDur);
+            }
+            detected_result = "";
+        } else {
+
+        }
+    } else if (detected_result != "" && addnewblock) {
         if (millis() > detectInterval) {
-            detectInterval = millis() + 3000;
+            detectInterval = millis() + 2000;
             background(240);
-            textSize(20);
-            textAlign(CENTER);
+            textSize(15);
+            textAlign(RIGHT);
             textStyle(NORMAL);
-            text("Last Detected: " + detected_result, 0, 10, windowWidth);
+            text("Last Detected:\n掃描結果： " + detected_result, -10, 10, windowWidth);
+            console.log("Added: " + detected_result);
+            textAlign(LEFT);
+            textSize(15);
+            text("Blocks Detected:\n已掃描數量：" + BLOCKS_DETECTED, 10, 10, windowWidth);
             ReadNewBlock();
         }
     }
@@ -448,6 +469,8 @@ function ClearInput() {
     duration = [];
     melodySeq = [];
     clear = true;
+    error_exist = false;
+    BLOCKS_DETECTED = 0;
     console.log("Cleared!")
 }
 
@@ -506,19 +529,23 @@ function ConvertMethod2(str) {
         // print("visited");
         // print(theChar);
         if (theChar == '(') {
-            bIndex.push(i);
-            var contains = false;
-            for (var j = i + 1; j < str.length; j++) {
-                if (str.charAt(j) == '(') {
-                    contains = true;
-                }
-                else if (str.charAt(j) == ')') {
-                    if (contains) { contains = false; if (!nestloopIdx.includes(i)) nestloopIdx.push(i); hasNest = true; }
-                    else {
-                        bIndex.push(j);
-                        repeatIdx.push(str.charAt(j + 2));
-                        i = j + 1;
-                        break;
+            if (!str.includes(")")) {
+                ERRORS(1);
+            } else {
+                bIndex.push(i);
+                var contains = false;
+                for (var j = i + 1; j < str.length; j++) {
+                    if (str.charAt(j) == '(') {
+                        contains = true;
+                    }
+                    else if (str.charAt(j) == ')') {
+                        if (contains) { contains = false; if (!nestloopIdx.includes(i)) nestloopIdx.push(i); hasNest = true; }
+                        else {
+                            bIndex.push(j);
+                            repeatIdx.push(str.charAt(j + 2));
+                            i = j + 1;
+                            break;
+                        }
                     }
                 }
             }
@@ -569,42 +596,42 @@ function DetectSwitch(branchID) {
             if (b1Seq != "") {
                 InsertSwitch(ct_str);
             } else {
-                print("BRANCH 1 HAS NO INPUTS");
+                print("NO CAT BRANCH");
             }
             break;
         case ("HT"):
             if (b2Seq != "") {
                 InsertSwitch(ht_str);
             } else {
-                print("BRANCH 2 HAS NO INPUTS");
+                print("NO HEART BRANCH");
             }
             break;
         case ("TH"):
             if (b3Seq != "") {
                 InsertSwitch(th_str);
             } else {
-                print("BRANCH 3 HAS NO INPUTS");
+                print("NO THUNDER BRANCH");
             }
             break;
         case ("MN"):
             if (b4Seq != "") {
                 InsertSwitch(mn_str);
             } else {
-                print("BRANCH 4 HAS NO INPUTS");
+                print("NO MOON BRANCH");
             }
             break;
         case ("SN"):
             if (b4Seq != "") {
                 InsertSwitch(sn_str);
             } else {
-                print("BRANCH 4 HAS NO INPUTS");
+                print("NO SUN BRANCH");
             }
             break;
         case ("SR"):
             if (b4Seq != "") {
                 InsertSwitch(b4Seq);
             } else {
-                print("BRANCH 4 HAS NO INPUTS");
+                print("NO STAR BRANCH");
             }
             break;
     }
@@ -636,13 +663,13 @@ function InsertSwitch(str) {
 //alston. the following functions are for playing note sequence.
 function GetSeq(digits) {
     volume.push(100);
-    let noteDua, noteCode;
-    noteDua = int(digits % 10);
+    let noteDur, noteCode;
+    noteDur = int(digits % 10);
     noteCode = int(digits / 10);
-    switch (noteDua) {
+    switch (noteDur) {
         case (1): duration.push(300); break;
-        case (2): duration.push(700); break;
-        case (3): duration.push(1100); break;
+        case (2): duration.push(600); break;
+        case (3): duration.push(900); break;
         // case (4): duration.push(1200); break;
     }
     switch (noteCode) {
@@ -654,8 +681,24 @@ function GetSeq(digits) {
     }
 }
 
-function PrintSeq() {
+function TestSound(inputNote, inputDur) {
+    let freq = 0, dur = 0;
+    switch (inputNote) {
+        case (1): freq = 261.63; break;
+        case (2): freq = 293.67; break;
+        case (3): freq = 329.63; break;
+        case (4): freq = 349.23; break;
+        case (5): freq = 392.00; break;
+    }
+    switch (inputDur) {
+        case (1): dur = 300; break;
+        case (2): dur = 600; break;
+        case (3): dur = 900; break;
+    }
+    PlayNote(freq, dur);
+}
 
+function PrintSeq() {
     DetectBlock(mainSeq);
     Convert();
     if (!error_exist) {
@@ -749,24 +792,25 @@ function ResetBranch() {
 
 function Addnewblocks() {
     addnewblock = true;
+    BLOCKS_DETECTED++;
 }
 
 function ERRORS(errorCode) {
     switch (errorCode) {
         case (0):
-            error_msg = "Switch is not complete!\nPlease scan barcode on the blocks again.";
+            error_msg = "Branch blocks are not in pair!\nPlease scan barcode on the blocks again.\n分支模塊不匹配，請重新掃描";
             error_exist = true;
             break;
         case (1):
-            error_msg = "Loop is not complete!\nPlease scan barcode on the blocks again.";
+            error_msg = "Loop blocks are not in pair!\nPlease scan barcode on the blocks again.\n循環體不完整，請重新掃描";
             error_exist = true;
             break;
         case (2):
-            error_msg = "Empty Switch/Loop Blocks!";
+            error_msg = "Empty Switch/Loop Blocks!\n請重新掃描";
             error_exist = true;
             break;
         case (3):
-            error_msg = "No detected blocks!";
+            error_msg = "No detected blocks!\n模塊空缺，請重新掃描";
             error_exist = true;
             break;
         // case (4):
@@ -785,4 +829,71 @@ function ExtractSwitchSeq(searchID, inputIndex) {
     convertedSeq = convertedSeq + " " + String(searchID);
 
     return switchStr;
+}
+
+
+function DescriSound(inputStr) {
+    if (inputStr.includes("(")) {
+        var audio = new Audio('audio_file.mp3');
+        audio.play();
+    } else if (inputStr.includes(")")) {
+        var audio = new Audio('audio_file.mp3');
+        audio.play();
+    } else if (inputStr.includes("SS")) {
+        let branchID = inputStr.slice(2, 4);
+        switch (branchID) {
+            case ("CT"):
+                var audio = new Audio('audio_file.mp3');
+                audio.play();
+                break;
+            case ("HT"):
+                var audio = new Audio('audio_file.mp3');
+                audio.play();
+                break;
+            case ("TH"):
+                var audio = new Audio('audio_file.mp3');
+                audio.play();
+                break;
+            case ("MN"):
+                var audio = new Audio('audio_file.mp3');
+                audio.play();
+                break;
+            case ("SN"):
+                var audio = new Audio('audio_file.mp3');
+                audio.play();
+                break;
+            case ("SR"):
+                var audio = new Audio('audio_file.mp3');
+                audio.play();
+                break;
+        }
+    } else if (inputStr.includes("SE")) {
+        let branchID = inputStr.slice(2, 4);
+        switch (branchID) {
+            case ("CT"):
+                var audio = new Audio('audio_file.mp3');
+                audio.play();
+                break;
+            case ("HT"):
+                var audio = new Audio('audio_file.mp3');
+                audio.play();
+                break;
+            case ("TH"):
+                var audio = new Audio('audio_file.mp3');
+                audio.play();
+                break;
+            case ("MN"):
+                var audio = new Audio('audio_file.mp3');
+                audio.play();
+                break;
+            case ("SN"):
+                var audio = new Audio('audio_file.mp3');
+                audio.play();
+                break;
+            case ("SR"):
+                var audio = new Audio('audio_file.mp3');
+                audio.play();
+                break;
+        }
+    }
 }
