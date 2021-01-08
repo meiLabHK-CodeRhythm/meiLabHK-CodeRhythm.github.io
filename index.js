@@ -455,7 +455,7 @@ function draw() {
     textSize(15);
     textAlign(CENTER);
     textStyle(BOLD);
-    text("MEI Lab @SCM", 0, 270, windowWidth);
+    text("MEI Lab @SCM", 0, windowHeight - 480, windowWidth);
 }
 
 function ReadNewBlock() {
