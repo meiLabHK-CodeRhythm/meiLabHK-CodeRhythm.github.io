@@ -315,7 +315,7 @@ Following scripts were created by Alston Lantian X. on 10 Nov 2020
 Some functions were contirbuted by Hugo and Kexin
 */
 
-let updateBtn, playBtn;
+let addBlockBtn, endBtn;
 let mainInput, b1Input, b2Input, b3Input, b4Input;
 let mainSeq, b1Seq, b2Seq, b3Seq, b4Seq;
 
@@ -336,9 +336,22 @@ let trigger = 0;
 let index = 0;
 let autoplay = false;
 
+var addnewblock = false;
+
 var context = new AudioContext();
 var o = null;
 var g = null;
+
+
+var convertedSeq = "";
+let cat_branch = false;
+let heart_branch = false;
+let thunder_branch = false;
+let moon_branch = false;
+let sun_branch = false;
+let star_branch = false;
+let ct_str = "", ht_str = "", th_str = "", mn_str = "", sn_str = "", sr_str = "";
+
 
 function setup() {
     // var w = window.innerWidth;
@@ -379,40 +392,50 @@ function setup() {
     // b4Input.size(windowWidth * 0.8, 30);
     // b4Input.position(windowWidth * 0.1, 525);
 
-    updateBtn = createButton('Update');
-    updateBtn.position(windowWidth * 0.1, 590);
-    updateBtn.size(windowWidth * 0.38, 30);
-    updateBtn.style('font-size', '20px');
-    updateBtn.mousePressed(testSound);
+    addBlockBtn = createButton('Add Block');
+    addBlockBtn.position(windowWidth * 0.1, 390);
+    addBlockBtn.size(windowWidth * 0.38, 30);
+    addBlockBtn.style('font-size', '20px');
+    addBlockBtn.mousePressed(addnewblocks);
 
-    //     playBtn = createButton('Play');
-    //     playBtn.position(windowWidth * 0.52, 590);
-    //     playBtn.size(windowWidth * 0.38, 30);
-    //     playBtn.style('font-size', '20px');
-    //     playBtn.mousePressed(playSeq);
+    endBtn = createButton('Play');
+    endBtn.position(windowWidth * 0.52, 390);
+    endBtn.size(windowWidth * 0.38, 30);
+    endBtn.style('font-size', '20px');
+    endBtn.mousePressed(playSeq);
+    updateInput();
 }
 
 function draw() {
+
+    // newDetection();
+    // if (detected_result != 0 && new_detection) {
+    //     // console.log(detected_result);
+    //     background(240);
+    //     textSize(20);
+    //     textAlign(CENTER);
+    //     text("Last Detected: " + detected_result, 0, 10, windowWidth);
+    //     // mainInput.value(detected_result);
+    //     updateInput();
+    // }
+
+    // if (addnewblock) {
+    //     updateInput();
+    //     addnewblock = false;
+    // }
+
     //alston. here is to play the whole seq
     if (autoplay && millis() > trigger) {
         playNote(note[index], duration[index]);
         trigger = millis() + duration[index];
+        // console.log(trigger);
         index++;
     } else if (index >= note.length) {
         autoplay = false;
         index = 0;
     }
 
-    newDetection();
-    if (detected_result != 0 && new_detection) {
-        console.log(detected_result);
-        background(240);
-        textSize(20);
-        textAlign(CENTER);
-        text("Last Detected: " + detected_result, 0, 10, windowWidth);
-        mainInput.value(detected_result);
-        updateInput();
-    }
+
 }
 
 function newDetection() {
@@ -426,39 +449,44 @@ function newDetection() {
 
 function updateInput() {
     // mainSeq = mainInput.value();
-    mainSeq = detected_result;
+    // mainSeq = mainSeq + detected_result;
+    mainSeq = "11 ( 21 31 ) 2 SSCT 41 51 SECT 11";
+    // mainSeq = "11 21";
+    detectBlock(mainSeq);
+    console.log(convertedSeq);
+    console.log(ct_str);
+    // b1Seq = b1Input.value();
+    // b2Seq = b2Input.value();
+    // b3Seq = b3Input.value();
+    // b4Seq = b4Input.value();
+    // note = [];
+    // duration = [];
+    // volume = [];
+    // melodySeq = [];
 
-    b1Seq = b1Input.value();
-    b2Seq = b2Input.value();
-    b3Seq = b3Input.value();
-    b4Seq = b4Input.value();
-    note = [];
-    duration = [];
-    volume = [];
-    melodySeq = [];
-
-    print("THE INPUT SEQUENCE : ");
-    print(mainSeq);
-    if (b1Seq != "") {
-        print("Branch 1 : " + b1Seq);
-    }
-    if (b2Seq != "") {
-        print("Branch 2 : " + b2Seq);
-    }
-    if (b3Seq != "") {
-        print("Branch 3 : " + b3Seq);
-    }
-    if (b4Seq != "") {
-        print("Branch 4 : " + b4Seq);
-    }
+    // print("THE INPUT SEQUENCE : ");
+    // print(mainSeq);
+    // if (b1Seq != "") {
+    //     print("Branch 1 : " + b1Seq);
+    // }
+    // if (b2Seq != "") {
+    //     print("Branch 2 : " + b2Seq);
+    // }
+    // if (b3Seq != "") {
+    //     print("Branch 3 : " + b3Seq);
+    // }
+    // if (b4Seq != "") {
+    //     print("Branch 4 : " + b4Seq);
+    // }
     Convert();
+    // addnewblocks = false;
 }
 
 function Convert() {
-    if (!mainSeq.includes("(")) {
-        rawSplitSt = split(mainSeq, " ");
+    if (!convertedSeq.includes("(")) {
+        rawSplitSt = split(convertedSeq, " ");
         for (var i = 0; i < rawSplitSt.length; i++) {
-            if (rawSplitSt[i].includes("a") || rawSplitSt[i].includes("b") || rawSplitSt[i].includes("c") || rawSplitSt[i].includes("d")) {
+            if (rawSplitSt[i].includes("CT") || rawSplitSt[i].includes("HT") || rawSplitSt[i].includes("TH") || rawSplitSt[i].includes("MN") || rawSplitSt[i].includes("SN") || rawSplitSt[i].includes("SR")) {
                 detectSwitch(rawSplitSt[i]);
             } else {
                 rawSplit = int(rawSplitSt[i]);
@@ -467,10 +495,10 @@ function Convert() {
         }
     }
     else {
-        raw = ConvertMethod2(mainSeq);
+        raw = ConvertMethod2(convertedSeq);
         rawSplitSt = split(raw, " ");
         for (var i = 0; i < rawSplitSt.length; i++) {
-            if (rawSplitSt[i].includes("a") || rawSplitSt[i].includes("b") || rawSplitSt[i].includes("c") || rawSplitSt[i].includes("d")) {
+            if (rawSplitSt[i].includes("CT") || rawSplitSt[i].includes("HT") || rawSplitSt[i].includes("TH") || rawSplitSt[i].includes("MN") || rawSplitSt[i].includes("SN") || rawSplitSt[i].includes("SR")) {
                 detectSwitch(rawSplitSt[i]);
             } else {
                 rawSplit = int(rawSplitSt[i]);
@@ -558,29 +586,44 @@ function ProcessLoop(loopStr, repeatTime) {
 
 //alston. the following functions are for switch functions. 
 function detectSwitch(branchID) {
+    //alston. not using "else if" in case switches don't come in pair 20201105
     switch (branchID) {
-        case ("a"):
+        case ("CT"):
             if (b1Seq != "") {
-                InsertSwitch(b1Seq);
+                InsertSwitch(ct_str);
             } else {
                 print("BRANCH 1 HAS NO INPUTS");
             }
             break;
-        case ("b"):
+        case ("HT"):
             if (b2Seq != "") {
-                InsertSwitch(b2Seq);
+                InsertSwitch(ht_str);
             } else {
                 print("BRANCH 2 HAS NO INPUTS");
             }
             break;
-        case ("c"):
+        case ("TH"):
             if (b3Seq != "") {
-                InsertSwitch(b3Seq);
+                InsertSwitch(th_str);
             } else {
                 print("BRANCH 3 HAS NO INPUTS");
             }
             break;
-        case ("d"):
+        case ("MN"):
+            if (b4Seq != "") {
+                InsertSwitch(mn_str);
+            } else {
+                print("BRANCH 4 HAS NO INPUTS");
+            }
+            break;
+        case ("SN"):
+            if (b4Seq != "") {
+                InsertSwitch(sn_str);
+            } else {
+                print("BRANCH 4 HAS NO INPUTS");
+            }
+            break;
+        case ("SR"):
             if (b4Seq != "") {
                 InsertSwitch(b4Seq);
             } else {
@@ -621,19 +664,16 @@ function getSeq(digits) {
     noteCode = int(digits / 10);
     switch (noteDua) {
         case (1): duration.push(300); break;
-        case (2): duration.push(600); break;
-        case (3): duration.push(900); break;
-        case (4): duration.push(1200); break;
+        case (2): duration.push(700); break;
+        case (3): duration.push(1100); break;
+        // case (4): duration.push(1200); break;
     }
     switch (noteCode) {
-        case (1): note.push(60); melodySeq.push(1); break;
-        case (2): note.push(62); melodySeq.push(2); break;
-        case (3): note.push(64); melodySeq.push(3); break;
-        case (4): note.push(65); melodySeq.push(4); break;
-        case (5): note.push(67); melodySeq.push(5); break;
-        case (6): note.push(69); melodySeq.push(6); break;
-        case (7): note.push(71); melodySeq.push(7); break;
-        case (8): note.push(72); melodySeq.push(8); break;
+        case (1): note.push(261.63); melodySeq.push(1); break;
+        case (2): note.push(293.67); melodySeq.push(2); break;
+        case (3): note.push(329.63); melodySeq.push(3); break;
+        case (4): note.push(349.23); melodySeq.push(4); break;
+        case (5): note.push(392.00); melodySeq.push(5); break;
     }
 }
 
@@ -646,98 +686,114 @@ function playSeq() {
     //alston. playing seq is conducted inside draw()
 }
 
-// Alternative function to play a note
+// Alternative function to play a note with web audio api
+// function testSound() {
+//     playNote2(1047, 'sine');
+// }
 
-
-function testSound() {
-    playNote2(1047, 'sine');
-}
-
-function playNote2(frequency, type) {
-
+function playNote(frequency, dur) {
     o = context.createOscillator();
     g = context.createGain();
     o.type = 'sine';
     o.connect(g);
-    o.frequency.value = 293.67;
+    o.frequency.value = frequency;
     g.connect(context.destination);
-    g.gain.exponentialRampToValueAtTime(0.00001, context.currentTime + 2)
+    g.gain.exponentialRampToValueAtTime(0.00001, context.currentTime + dur / 1000);
     o.start(0);
-}
 
-// function testhhh() {
-//     g.gain.exponentialRampToValueAtTime(1.0, context.currentTime + 1);// }
-
-
-var notes = [];
-var durations = [];
-var loops
-
-function ProcessLoop(loopStr, iterations) {
-    var outputStr;
-    var appendStr = [];
-    for (var i = 0; i < iterations; i++) {
-        appendStr.push(loopStr);
-    }
-    outputStr = appendStr.join();
-    return outputStr;
 }
 
 
-var catSeq = [];
-var heartSeq = [];
-var thunderSeq = [];
-var moonSeq = [];
-var sunSeq = [];
-var starSeq = [];
+function detectBlock(scanned_str) {
+    let split_str = [];
+    split_str = scanned_str.split(" ");
+    const block_amount = split_str.length;
 
+    for (i = 0; i < block_amount; i++) {
+        // var regExp = /[a-zA-Z]/g;
+        // if (!regExp.test("haha")) {
+        //     var note_midi = scanned_str.charAt(0);
+        //     var note_dur = scanned_str.charAt(1);
+        //     convertNoteMIDI(note_midi);
+        //     convertNoteDur(note_dur);
+        // }
 
-function branchesNotes(branchID, swNotes) {
-    switch (branchID) {
-        case ("CT"):
-            catSeq = catSeq + swNotes;
-            mainSeq = mainSeq + " CT ";
-            break;
-        case ("HT"):
-            heartSeq = heartSeq + swNotes;
-            mainSeq = mainSeq + " HT ";
-            break;
-        case ("TH"):
-            thunderSeq = thunderSeq + swNotes;
-            mainSeq = mainSeq + " TH ";
-            break;
-        case ("MN"):
-            moonSeq = moonSeq + swNotes;
-            mainSeq = mainSeq + " MN ";
-            break;
-        case ("SN"):
-            sunSeq = sunSeq + swNotes;
-            mainSeq = mainSeq + " SN ";
-            break;
-        case ("SR"):
-            starSeq = starSeq + swNotes;
-            mainSeq = mainSeq + " SR ";
-            break;
-    }
-}
-
-
-function extractSwitchSeq(inputSeq) {
-    var switchStartIndex = inputSeq.indexOf("SS CT") + 6;
-    var switchEndIndex = inputSeq.indexOf("SE CT") - 2;
-    var switchStr = inputSeq.slice(switchStartIndex, switchEndIndex + 1);
-
-    return switchStr;
-}
-
-if (detected_result.includes("SS")) {
-    var branchID = detected_result.slice(3, 6);
-    switch (branchID) {
-        case ("CT"):
-
-            break;
+        if (split_str[i].includes("SS") || split_str[i].includes("SE")) {
+            if (split_str[i].includes("SS")) {
+                const input_index = mainSeq.indexOf("SS");
+                let branch_index = split_str[i].slice(2, 4);
+                // console.log(branch_index);
+                switch (branch_index) {
+                    case ("CT"):
+                        cat_branch = true;
+                        ct_str = extractSwitchSeq("CT", input_index);
+                        i = split_str.indexOf("SECT");
+                        break;
+                    case ("HT"):
+                        heart_branch = true;
+                        extractSwitchSeq(mainSeq, "HT");
+                        break;
+                    case ("TH"):
+                        thunder_branch = true;
+                        extractSwitchSeq(mainSeq, "TH");
+                        break;
+                    case ("MN"):
+                        moon_branch = true;
+                        extractSwitchSeq(mainSeq, "MN");
+                        break;
+                    case ("SN"):
+                        sun_branch = true;
+                        extractSwitchSeq(mainSeq, "SN");
+                        break;
+                    case ("SR"):
+                        star_branch = true;
+                        extractSwitchSeq(mainSeq, "SR");
+                        break;
+                }
+            } else if (split_str[i].includes('SE')) {
+                resetBranch();
+            }
+        } else {
+            convertedSeq = convertedSeq + " " + split_str[i];
+        }
     }
 }
+
+function convertNoteMIDI(inputs) {
+    switch (inputs) {
+        case (1): note.push(261.63); melodySeq.push(1); break;
+        case (2): note.push(293.67); melodySeq.push(2); break;
+        case (3): note.push(329.63); melodySeq.push(3); break;
+        case (4): note.push(349.23); melodySeq.push(4); break;
+        case (5): note.push(392.00); melodySeq.push(5); break;
+        // case (6): note.push(440.00); melodySeq.push(6); break;
+        // case (7): note.push(493.88); melodySeq.push(7); break;
+        // case (8): note.push(523.251); melodySeq.push(8); break;
+    }
+}
+
+function convertNoteDur(inputs) {
+    switch (inputs) {
+        case (1): duration.push(300); break;
+        case (2): duration.push(700); break;
+        case (3): duration.push(1100); break;
+        // case (4): duration.push(1200); break;
+    }
+}
+
+function resetBranch() {
+    cat_branch = false;
+    heart_branch = false;
+    thunder_branch = false;
+    moon_branch = false;
+    sun_branch = false;
+    star_branch = false;
+}
+
+function addnewblocks() {
+    addnewblock = true;
+}
+
 
 function errors(errorCode) {
     switch (errorCode) {
@@ -759,3 +815,17 @@ function errors(errorCode) {
     }
 }
 
+
+function extractSwitchSeq(searchID, inputIndex) {
+    var startID = "SS" + searchID;
+    var endID = "SE" + searchID;
+    var switchStartIndex = mainSeq.indexOf(startID) + 5;
+    var switchEndIndex = mainSeq.indexOf(endID) - 2;
+    var switchStr = mainSeq.slice(switchStartIndex, switchEndIndex + 1);
+    // var switchStr = mainSeq.slice(0, inputIndex + 1);
+    convertedSeq = convertedSeq + " " + String(searchID);
+    // mainSeq = mainSeq.replace("")
+    // convertedSeq = 
+
+    return switchStr;
+}
