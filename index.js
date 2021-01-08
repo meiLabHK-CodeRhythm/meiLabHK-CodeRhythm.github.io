@@ -361,7 +361,7 @@ let BLOCKS_DETECTED = 0;
 function setup() {
     // var w = window.innerWidth;
     // console.log("innerWidth " + w);
-    createCanvas(windowWidth, windowHeight - 250);
+    createCanvas(windowWidth, windowHeight - 450);
     background(240);
 
     // A triangle oscillator
@@ -451,6 +451,11 @@ function draw() {
         textStyle(BOLD);
         text("Error: " + error_msg, 0, 10, windowWidth);
     }
+
+    textSize(15);
+    textAlign(CENTER);
+    textStyle(BOLD);
+    text("MEI Lab @SCM", 0, 270, windowWidth);
 }
 
 function ReadNewBlock() {
@@ -542,7 +547,7 @@ function ConvertMethod2(str) {
                         if (contains) { contains = false; if (!nestloopIdx.includes(i)) nestloopIdx.push(i); hasNest = true; }
                         else {
                             bIndex.push(j);
-                            repeatIdx.push(str.charAt(j + 2));
+                            repeatIdx.push(str.charAt(j + 1));
                             i = j + 1;
                             break;
                         }
@@ -840,60 +845,10 @@ function DescriSound(inputStr) {
         var audio = new Audio('audio_file.mp3');
         audio.play();
     } else if (inputStr.includes("SS")) {
-        let branchID = inputStr.slice(2, 4);
-        switch (branchID) {
-            case ("CT"):
-                var audio = new Audio('audio_file.mp3');
-                audio.play();
-                break;
-            case ("HT"):
-                var audio = new Audio('audio_file.mp3');
-                audio.play();
-                break;
-            case ("TH"):
-                var audio = new Audio('audio_file.mp3');
-                audio.play();
-                break;
-            case ("MN"):
-                var audio = new Audio('audio_file.mp3');
-                audio.play();
-                break;
-            case ("SN"):
-                var audio = new Audio('audio_file.mp3');
-                audio.play();
-                break;
-            case ("SR"):
-                var audio = new Audio('audio_file.mp3');
-                audio.play();
-                break;
-        }
+        var audio = new Audio('audio_file.mp3');
+        audio.play();
     } else if (inputStr.includes("SE")) {
-        let branchID = inputStr.slice(2, 4);
-        switch (branchID) {
-            case ("CT"):
-                var audio = new Audio('audio_file.mp3');
-                audio.play();
-                break;
-            case ("HT"):
-                var audio = new Audio('audio_file.mp3');
-                audio.play();
-                break;
-            case ("TH"):
-                var audio = new Audio('audio_file.mp3');
-                audio.play();
-                break;
-            case ("MN"):
-                var audio = new Audio('audio_file.mp3');
-                audio.play();
-                break;
-            case ("SN"):
-                var audio = new Audio('audio_file.mp3');
-                audio.play();
-                break;
-            case ("SR"):
-                var audio = new Audio('audio_file.mp3');
-                audio.play();
-                break;
-        }
+        var audio = new Audio('audio_file.mp3');
+        audio.play();
     }
 }
