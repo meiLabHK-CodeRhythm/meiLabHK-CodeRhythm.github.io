@@ -910,20 +910,18 @@ function DescriSound(inputStr) {
     } else {
         audio_path = "VI/CH/";
     }
-    loadSoundFile('VI/EN/LS.mp3');
-    playSound();
-    // if (inputStr.includes("(")) {
-    //     var audio = new Audio(audio_path + "LS.mp3");
-    // } else if (inputStr.includes(")")) {
-    //     var audio = new Audio('audio_file.mp3');
-    // } else if (inputStr.includes("SS")) {
-    //     var audio = new Audio('audio_file.mp3');
-    // } else if (inputStr.includes("SE")) {
-    //     var audio = new Audio('audio_file.mp3');
-    // }
-    // if (audio_path != null) {
-    //     audio.play();
-    // } else {
-    //     console.log("Audio file not found.")
-    // }
+    if (inputStr.includes("(")) {
+        loadSoundFile(audio_path + "LS.mp3");
+    } else if (inputStr.includes(")")) {
+        loadSoundFile(audio_path + "LE.mp3");
+    } else if (inputStr.includes("SS")) {
+        loadSoundFile(audio_path + "LS.mp3");
+    } else if (inputStr.includes("SE")) {
+        loadSoundFile(audio_path + "LS.mp3");
+    }
+    if (audio_path != null) {
+        playSound();
+    } else {
+        console.log("Audio file not found.")
+    }
 }
