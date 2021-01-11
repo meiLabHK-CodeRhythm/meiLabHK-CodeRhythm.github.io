@@ -316,7 +316,7 @@ Following scripts were created by Alston Lantian X. on 10 Nov 2020
 Some functions were contirbuted by Hugo and Kexin
 */
 
-let addBlockBtn, endBtn, clearBtn;
+let addBlockBtn, endBtn, clearBtn, langBtn;
 let mainSeq = "";
 
 var notes = [60, 62, 64, 65, 67, 69, 71, 72];
@@ -336,7 +336,9 @@ let b4_focused = false;
 let trigger = 0;
 let index = 0;
 let autoplay = false;
-let detectInterval = 0;
+let detectIntervalAddlock = 0;
+let detectInterval = 0
+let detectIntervalVI = 0;
 
 var addnewblock = false;
 
@@ -358,6 +360,9 @@ let error_msg = "";
 let clear = true;
 let BLOCKS_DETECTED = 0;
 
+let VI_CH = false;
+let VI_EN = true;
+
 function setup() {
     // var w = window.innerWidth;
     // console.log("innerWidth " + w);
@@ -373,21 +378,28 @@ function setup() {
     addBlockBtn = createButton('ADD BLOCK 添加');
     addBlockBtn.position(windowWidth * 0.1, 390);
     addBlockBtn.size(windowWidth * 0.38, 30);
-    addBlockBtn.style('font-size', '18px');
+    addBlockBtn.style('font-size', '15px');
     // addBlockBtn.style('Font Style Bold');
     addBlockBtn.mousePressed(Addnewblocks);
 
     endBtn = createButton('PLAY 播放');
     endBtn.position(windowWidth * 0.52, 390);
     endBtn.size(windowWidth * 0.38, 30);
-    endBtn.style('font-size', '18px');
+    endBtn.style('font-size', '15px');
     endBtn.mousePressed(PrintSeq);
 
     clearBtn = createButton('CLEAR 清空');
     clearBtn.position(windowWidth * 0.52, 340);
     clearBtn.size(windowWidth * 0.38, 30);
-    clearBtn.style('font-size', '18px');
+    clearBtn.style('font-size', '15px');
     clearBtn.mousePressed(ClearInput);
+
+
+    langBtn = createButton('EN/中');
+    langBtn.position(windowWidth * 0.75, windowHeight - 230);
+    langBtn.size(windowWidth * 0.15, 30);
+    langBtn.style('font-size', '12px');
+    langBtn.mousePressed(ChangeVILan);
 }
 
 function draw() {
@@ -413,11 +425,18 @@ function draw() {
             }
             detected_result = "";
         } else {
-
+            if (millis() > detectIntervalVI) {
+                detectIntervalVI = millis() + 2000;
+                DescriSound(detected_result);
+                detected_result = "";
+            } else {
+                //dispose detected result if neither a note nor funciton block
+                detected_result = "";
+            }
         }
     } else if (detected_result != "" && addnewblock) {
-        if (millis() > detectInterval) {
-            detectInterval = millis() + 2000;
+        if (millis() > detectIntervalAddlock) {
+            detectIntervalAddlock = millis() + 2000;
             background(240);
             textSize(15);
             textAlign(RIGHT);
@@ -837,18 +856,37 @@ function ExtractSwitchSeq(searchID, inputIndex) {
 }
 
 
+function ChangeVILan() {
+    if (VI_CH) {
+        VI_CH = false;
+        VI_EN = true;
+        console.log("Language for Voice Instructions changed to English.")
+    } else if (VI_EN) {
+        VI_CH = true;
+        VI_EN = false;
+        console.log("Language for Voice Instructions changed to Cantonese.")
+    }
+}
+
 function DescriSound(inputStr) {
+    let audio_path = "";
+    if (VI_EN) {
+        audio_path = "VI/EN/";
+    } else {
+        audio_path = "VI/CH/";
+    }
     if (inputStr.includes("(")) {
-        var audio = new Audio('audio_file.mp3');
-        audio.play();
+        var audio = new Audio(audio_path + "LS.mp3");
     } else if (inputStr.includes(")")) {
         var audio = new Audio('audio_file.mp3');
-        audio.play();
     } else if (inputStr.includes("SS")) {
         var audio = new Audio('audio_file.mp3');
-        audio.play();
     } else if (inputStr.includes("SE")) {
         var audio = new Audio('audio_file.mp3');
+    }
+    if (audio_path != null) {
         audio.play();
+    } else {
+        console.log("Audio file not found.")
     }
 }

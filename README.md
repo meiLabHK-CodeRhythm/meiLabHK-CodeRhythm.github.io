@@ -8,6 +8,6 @@ Scan one barcode each time.
 **INT** 'INT' for play block.<br>
 **21** 1-7 for notes, 1-4 for duration.<br>
 **(** '(' for loop start.<br>
-**)** ')' for loop end. 1-4 for loop iteration.<br>
+**)2** ')' for loop end. 1-4 for loop iteration.<br>
 **SSCAT** 'SS' for switch start, CAT for cat, HT for heart, TH for thunder, MN for moon, SN for sun, SR for star<br>
 **SECAT** 'SE' for switch start, CAT for cat, HT for heart, TH for thunder, MN for moon, SN for sun, SR for star<br>
