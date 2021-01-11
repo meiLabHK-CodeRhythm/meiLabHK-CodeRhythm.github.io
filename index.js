@@ -940,9 +940,9 @@ function DescriSound(inputStr) {
         LANG = 'CH';
     }
     if (inputStr.includes("(")) {
-        PlaySound(LANG, 0);
-    } else if (inputStr.includes(")")) {
         PlaySound(LANG, 1);
+    } else if (inputStr.includes(")")) {
+        PlaySound(LANG, 0);
     } else if (inputStr.includes("SS")) {
         PlaySound(LANG, 0);
     } else if (inputStr.includes("SE")) {
