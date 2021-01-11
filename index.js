@@ -366,10 +366,11 @@ let BLOCKS_DETECTED = 0;
 
 // let testPath = "VI/EN/LS.mp3";
 var source = null;
-var audioBuffer = null;
+var audioBuffer_EN = [];
+var audioBuffer_CH = [];
 
 
-
+InitAllVIs();
 function setup() {
     // var w = window.innerWidth;
     // console.log("innerWidth " + w);
@@ -485,28 +486,56 @@ function draw() {
 }
 
 
-//following three functions are must for use on iOS platforms.
-function initAudioVI(arrayBuffer) {
-    context.decodeAudioData(arrayBuffer, function (buffer) {
-        audioBuffer = buffer;
-    }, function (e) {
-        console.log('Error decoding file', e);
-    });
+function InitAllVIs() {
+    let CH_dir = [], EN_dir = [];
+    CH_dir = ['VI/CH/LE.mp3', 'VI/CH/LS.mp3'];
+    EN_dir = ['VI/EN/LE.mp3', 'VI/EN/LS.mp3'];
+
+    for (i = 0; i < CH_dir.length; i++) {
+        LoadSoundFile(CH_dir[i], 'CH', i);
+    }
+    for (i = 0; i < EN_dir.length; i++) {
+        LoadSoundFile(EN_dir[i], 'EN', i);
+    }
 }
 
-function loadSoundFile(url) {
+//following three functions are must for use on iOS platforms.
+function LoadSoundFile(url, LANG, index) {
     var xhr = new XMLHttpRequest();
     xhr.open('GET', url, true);
     xhr.responseType = 'arraybuffer';
     xhr.onload = function (e) {
-        initAudioVI(this.response);
+        InitAudioVI(this.response, LANG, index);
     };
     xhr.send();
 }
 
-function playSound() {
+function InitAudioVI(arrayBuffer, LANG, index) {
+    switch (LANG) {
+        case ('CH'):
+            context.decodeAudioData(arrayBuffer, function (buffer) {
+                audioBuffer_CH[index] = buffer;
+            }, function (e) {
+                console.log('Error decoding file', e);
+            });
+            break;
+        case ('EN'):
+            context.decodeAudioData(arrayBuffer, function (buffer) {
+                audioBuffer_EN[index] = buffer;
+            }, function (e) {
+                console.log('Error decoding file', e);
+            });
+            break;
+    }
+}
+
+function PlaySound(LANG, index) {
     source = context.createBufferSource();
-    source.buffer = audioBuffer;
+    if (LANG == 'CH') {
+        source.buffer = audioBuffer_CH[index];
+    } else if (LANG == 'EN') {
+        source.buffer = audioBuffer_EN[index];
+    }
     // source.loop = false;
     source.connect(context.destination);
     source.start(0);
@@ -904,24 +933,19 @@ function ChangeVILan() {
 }
 
 function DescriSound(inputStr) {
-    let audio_path = "";
+    let LANG = '';
     if (VI_EN) {
-        audio_path = "VI/EN/";
-    } else {
-        audio_path = "VI/CH/";
+        LANG = 'EN'
+    } else if (VI_CH) {
+        LANG = 'CH';
     }
     if (inputStr.includes("(")) {
-        loadSoundFile(audio_path + "LS.mp3");
+        PlaySound(LANG, 0);
     } else if (inputStr.includes(")")) {
-        loadSoundFile(audio_path + "LE.mp3");
+        PlaySound(LANG, 1);
     } else if (inputStr.includes("SS")) {
-        loadSoundFile(audio_path + "LS.mp3");
+        PlaySound(LANG, 0);
     } else if (inputStr.includes("SE")) {
-        loadSoundFile(audio_path + "LS.mp3");
-    }
-    if (audio_path != null) {
-        playSound();
-    } else {
-        console.log("Audio file not found.")
+        PlaySound(LANG, 0);
     }
 }
