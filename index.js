@@ -342,10 +342,14 @@ let detectIntervalVI = 0;
 
 var addnewblock = false;
 
+window.AudioContext = window.AudioContext || window.webkitAudioContext;
 var context = new AudioContext();
+
 var o = null;
 var g = null;
-
+let VI_CH = false;
+let VI_EN = true;
+var bufferLoader;
 
 var convertedSeq = "";
 let cat_branch = false;
@@ -360,8 +364,11 @@ let error_msg = "";
 let clear = true;
 let BLOCKS_DETECTED = 0;
 
-let VI_CH = false;
-let VI_EN = true;
+// let testPath = "VI/EN/LS.mp3";
+var source = null;
+var audioBuffer = null;
+loadSoundFile('VI/EN/LS.mp3');
+
 
 function setup() {
     // var w = window.innerWidth;
@@ -476,6 +483,50 @@ function draw() {
     textStyle(BOLD);
     text("MEI Lab @SCM", 0, windowHeight - 480, windowWidth);
 }
+
+
+
+function initAudioVI(arrayBuffer) {
+    // bufferLoader = new BufferLoader(
+    //     context,
+    //     [
+    //         '../VI/EN/LS.mp3',
+    //     ],
+    //     DescriSound
+    // );
+
+    // bufferLoader.load();
+    context.decodeAudioData(arrayBuffer, function (buffer) {
+        // audioBuffer is global to reuse the decoded audio later.
+        audioBuffer = buffer;
+        // var buttons = document.querySelectorAll('button');
+        // buttons[0].disabled = false;
+        // buttons[1].disabled = false;
+    }, function (e) {
+        console.log('Error decoding file', e);
+    });
+}
+
+function loadSoundFile(url) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', url, true);
+    xhr.responseType = 'arraybuffer';
+    xhr.onload = function (e) {
+        initAudioVI(this.response); // this.response is an ArrayBuffer.
+    };
+    xhr.send();
+}
+
+function playSound() {
+    source = context.createBufferSource();
+    source.buffer = audioBuffer;
+    // source.loop = false;
+    source.connect(context.destination);
+    source.start(0);
+}
+
+
+
 
 function ReadNewBlock() {
     if (addnewblock) {
@@ -875,18 +926,23 @@ function DescriSound(inputStr) {
     } else {
         audio_path = "VI/CH/";
     }
-    if (inputStr.includes("(")) {
-        var audio = new Audio(audio_path + "LS.mp3");
-    } else if (inputStr.includes(")")) {
-        var audio = new Audio('audio_file.mp3');
-    } else if (inputStr.includes("SS")) {
-        var audio = new Audio('audio_file.mp3');
-    } else if (inputStr.includes("SE")) {
-        var audio = new Audio('audio_file.mp3');
-    }
-    if (audio_path != null) {
-        audio.play();
-    } else {
-        console.log("Audio file not found.")
-    }
+    // var source1 = context.createBufferSource();
+    // source1.buffer = bufferList[0];
+    // source1.connect(context.destination);
+    // source1.start(0);
+    playSound();
+    // if (inputStr.includes("(")) {
+    //     var audio = new Audio(audio_path + "LS.mp3");
+    // } else if (inputStr.includes(")")) {
+    //     var audio = new Audio('audio_file.mp3');
+    // } else if (inputStr.includes("SS")) {
+    //     var audio = new Audio('audio_file.mp3');
+    // } else if (inputStr.includes("SE")) {
+    //     var audio = new Audio('audio_file.mp3');
+    // }
+    // if (audio_path != null) {
+    //     audio.play();
+    // } else {
+    //     console.log("Audio file not found.")
+    // }
 }
