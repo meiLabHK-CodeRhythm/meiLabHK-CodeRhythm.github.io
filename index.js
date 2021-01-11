@@ -367,7 +367,7 @@ let BLOCKS_DETECTED = 0;
 // let testPath = "VI/EN/LS.mp3";
 var source = null;
 var audioBuffer = null;
-loadSoundFile('VI/EN/LS.mp3');
+
 
 
 function setup() {
@@ -485,23 +485,10 @@ function draw() {
 }
 
 
-
+//following three functions are must for use on iOS platforms.
 function initAudioVI(arrayBuffer) {
-    // bufferLoader = new BufferLoader(
-    //     context,
-    //     [
-    //         '../VI/EN/LS.mp3',
-    //     ],
-    //     DescriSound
-    // );
-
-    // bufferLoader.load();
     context.decodeAudioData(arrayBuffer, function (buffer) {
-        // audioBuffer is global to reuse the decoded audio later.
         audioBuffer = buffer;
-        // var buttons = document.querySelectorAll('button');
-        // buttons[0].disabled = false;
-        // buttons[1].disabled = false;
     }, function (e) {
         console.log('Error decoding file', e);
     });
@@ -512,7 +499,7 @@ function loadSoundFile(url) {
     xhr.open('GET', url, true);
     xhr.responseType = 'arraybuffer';
     xhr.onload = function (e) {
-        initAudioVI(this.response); // this.response is an ArrayBuffer.
+        initAudioVI(this.response);
     };
     xhr.send();
 }
@@ -524,9 +511,6 @@ function playSound() {
     source.connect(context.destination);
     source.start(0);
 }
-
-
-
 
 function ReadNewBlock() {
     if (addnewblock) {
@@ -926,10 +910,7 @@ function DescriSound(inputStr) {
     } else {
         audio_path = "VI/CH/";
     }
-    // var source1 = context.createBufferSource();
-    // source1.buffer = bufferList[0];
-    // source1.connect(context.destination);
-    // source1.start(0);
+    loadSoundFile('VI/EN/LS.mp3');
     playSound();
     // if (inputStr.includes("(")) {
     //     var audio = new Audio(audio_path + "LS.mp3");
