@@ -434,7 +434,7 @@ function draw() {
             detected_result = "";
         } else {
             if (millis() > detectIntervalVI) {
-                detectIntervalVI = millis() + 2000;
+                detectIntervalVI = millis() + 3000;
                 DescriSound(detected_result);
                 detected_result = "";
             } else {
