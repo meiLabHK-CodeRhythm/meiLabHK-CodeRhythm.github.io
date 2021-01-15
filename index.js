@@ -383,30 +383,30 @@ function setup() {
     osc.start();
     osc.amp(0);
 
-    addBlockBtn = createButton('ADD BLOCK 添加');
-    addBlockBtn.position(windowWidth * 0.1, 390);
-    addBlockBtn.size(windowWidth * 0.38, 30);
-    addBlockBtn.style('font-size', '15px');
+    addBlockBtn = createButton('ADD BLOCK\n新增');
+    addBlockBtn.position(windowWidth * 0.1, 340);
+    addBlockBtn.size(windowWidth * 0.38, 80);
+    addBlockBtn.style('font-size', '12px');
     // addBlockBtn.style('Font Style Bold');
     addBlockBtn.mousePressed(Addnewblocks);
 
     endBtn = createButton('PLAY 播放');
     endBtn.position(windowWidth * 0.52, 390);
     endBtn.size(windowWidth * 0.38, 30);
-    endBtn.style('font-size', '15px');
+    endBtn.style('font-size', '12px');
     endBtn.mousePressed(PrintSeq);
 
     clearBtn = createButton('CLEAR 清空');
     clearBtn.position(windowWidth * 0.52, 340);
     clearBtn.size(windowWidth * 0.38, 30);
-    clearBtn.style('font-size', '15px');
+    clearBtn.style('font-size', '12px');
     clearBtn.mousePressed(ClearInput);
 
 
     langBtn = createButton('EN/中');
     langBtn.position(windowWidth * 0.75, windowHeight - 230);
     langBtn.size(windowWidth * 0.15, 30);
-    langBtn.style('font-size', '12px');
+    langBtn.style('font-size', '10px');
     langBtn.mousePressed(ChangeVILan);
 }
 
@@ -681,43 +681,43 @@ function DetectSwitch(branchID) {
     //alston. not using "else if" in case switches don't come in pair 20201105
     switch (branchID) {
         case ("CT"):
-            if (b1Seq != "") {
+            if (ct_str != "") {
                 InsertSwitch(ct_str);
             } else {
                 print("NO CAT BRANCH");
             }
             break;
         case ("HT"):
-            if (b2Seq != "") {
+            if (ht_str != "") {
                 InsertSwitch(ht_str);
             } else {
                 print("NO HEART BRANCH");
             }
             break;
         case ("TH"):
-            if (b3Seq != "") {
+            if (th_str != "") {
                 InsertSwitch(th_str);
             } else {
                 print("NO THUNDER BRANCH");
             }
             break;
         case ("MN"):
-            if (b4Seq != "") {
+            if (mn_str != "") {
                 InsertSwitch(mn_str);
             } else {
                 print("NO MOON BRANCH");
             }
             break;
         case ("SN"):
-            if (b4Seq != "") {
+            if (sn_str != "") {
                 InsertSwitch(sn_str);
             } else {
                 print("NO SUN BRANCH");
             }
             break;
         case ("SR"):
-            if (b4Seq != "") {
-                InsertSwitch(b4Seq);
+            if (sr_str != "") {
+                InsertSwitch(sr_str);
             } else {
                 print("NO STAR BRANCH");
             }
@@ -826,41 +826,66 @@ function DetectBlock(scanned_str) {
                     let branch_index = split_str[i].slice(2, 4);
                     switch (branch_index) {
                         case ("CT"):
-                            cat_branch = true;
-                            ct_str = ExtractSwitchSeq("CT", input_index);
-                            i = split_str.indexOf("SECT");
+                            if (cat_branch) {
+                                ct_str = ExtractSwitchSeq("CT", input_index);
+                            }
                             break;
                         case ("HT"):
-                            heart_branch = true;
-                            ht_str = ExtractSwitchSeq("HT", input_index);
-                            i = split_str.indexOf("SEHT");
+                            if (heart_branch) {
+                                ht_str = ExtractSwitchSeq("HT", input_index);
+                            }
                             break;
                         case ("TH"):
-                            thunder_branch = true;
-                            th_str = ExtractSwitchSeq("TH", input_index);
-                            i = split_str.indexOf("SETH");
+                            if (thunder_branch) {
+                                th_str = ExtractSwitchSeq("TH", input_index);
+                            }
                             break;
                         case ("MN"):
-                            moon_branch = true;
-                            mn_str = ExtractSwitchSeq("MN", input_index);
-                            i = split_str.indexOf("SEMN");
+                            if (moon_branch) {
+                                mn_str = ExtractSwitchSeq("MN", input_index);
+                            }
                             break;
                         case ("SN"):
-                            sun_branch = true;
-                            sn_str = ExtractSwitchSeq("SN", input_index);
-                            i = split_str.indexOf("SESN");
+                            if (sun_branch) {
+                                sn_str = ExtractSwitchSeq("SN", input_index);
+                            }
                             break;
                         case ("SR"):
-                            star_branch = true;
-                            sr_str = ExtractSwitchSeq("SR", input_index);
-                            i = split_str.indexOf("SESR");
+                            if (star_branch) {
+                                sr_str = ExtractSwitchSeq("SR", input_index);
+                            }
                             break;
+                        default:
+                            ERRORS(4);
                     }
+                    i = split_str.indexOf("SE");
                 } else {
                     ERRORS(0);
                 }
             } else if (split_str[i].includes('SE')) {
                 ResetBranch();
+            }
+        } else if (split_str[i].includes("B")) {
+            let branch_tobeplayed = split_str[i].slice(0, 2);
+            switch (branch_tobeplayed) {
+                case ("CT"):
+                    cat_branch = true;
+                    break;
+                case ("HT"):
+                    heart_branch = true;
+                    break;
+                case ("TH"):
+                    thunder_branch = true;
+                    break;
+                case ("MN"):
+                    moon_branch = true;
+                    break;
+                case ("SN"):
+                    sun_branch = true;
+                    break;
+                case ("SR"):
+                    star_branch = true;
+                    break;
             }
         } else {
             convertedSeq = convertedSeq + " " + split_str[i];
@@ -886,31 +911,31 @@ function Addnewblocks() {
 function ERRORS(errorCode) {
     switch (errorCode) {
         case (0):
-            error_msg = "Branch blocks are not in pair!\nPlease scan barcode on the blocks again.\n分支模塊不匹配，請重新掃描";
+            error_msg = "Branch blocks are not in pair!\nPlease scan barcode on the blocks again.\n分支模塊不匹配，請重新掃描！";
             error_exist = true;
             break;
         case (1):
-            error_msg = "Loop blocks are not in pair!\nPlease scan barcode on the blocks again.\n循環體不完整，請重新掃描";
+            error_msg = "Loop blocks are not in pair!\nPlease scan barcode on the blocks again.\n循環體不完整，請重新掃描！";
             error_exist = true;
             break;
         case (2):
-            error_msg = "Empty Switch/Loop Blocks!\n請重新掃描";
+            error_msg = "Empty Switch/Loop Blocks!\n請重新掃描！";
             error_exist = true;
             break;
         case (3):
-            error_msg = "No detected blocks!\n模塊空缺，請重新掃描";
+            error_msg = "No detected blocks!\n模塊空缺，請重新掃描！";
             error_exist = true;
             break;
-        // case (4):
-        //     console.log("Switch is not complete!");
-        //     break;
+        case (4):
+            console.log("No branch is selected!\n請選擇分支！");
+            break;
     }
 }
 
 
 function ExtractSwitchSeq(searchID, inputIndex) {
     var startID = "SS" + searchID;
-    var endID = "SE" + searchID;
+    var endID = "SE";
     var switchStartIndex = mainSeq.indexOf(startID) + 5;
     var switchEndIndex = mainSeq.indexOf(endID) - 2;
     var switchStr = mainSeq.slice(switchStartIndex, switchEndIndex + 1);
