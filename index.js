@@ -369,6 +369,8 @@ var source = null;
 var audioBuffer_EN = [];
 var audioBuffer_CH = [];
 
+let seqPlayed = false;
+
 
 InitAllVIs();
 function setup() {
@@ -420,7 +422,6 @@ function draw() {
         text("Please Scan Blocks To Start\n請掃描條形碼", 0, 10, windowWidth);
     }
 
-    // NewDetection();
     if (detected_result != "" && !addnewblock) {
         let isnum = /^\d+$/.test(detected_result);
         if (isnum) {
@@ -470,6 +471,7 @@ function draw() {
                 autoplay = false;
                 index = 0;
             }
+            seqPlayed = true;
         }
     } else {
         background(240);
@@ -488,8 +490,8 @@ function draw() {
 
 function InitAllVIs() {
     let CH_dir = [], EN_dir = [];
-    CH_dir = ['VI/CH/LE.mp3', 'VI/CH/LS.mp3'];
-    EN_dir = ['VI/EN/LE.mp3', 'VI/EN/LS.mp3'];
+    CH_dir = ['VI/CH/LS.mp3', 'VI/CH/LE2.mp3', 'VI/CH/LE3.mp3', 'VI/CH/LE4.mp3', 'VI/CH/LE5.mp3', 'VI/CH/SSCT.mp3', 'VI/CH/SSHT.mp3', 'VI/CH/SSMN.mp3', 'VI/CH/SSSN.mp3', 'VI/CH/SSSR.mp3', 'VI/CH/SSTH.mp3', 'VI/CH/SE.mp3', 'VI/CH/CTB.mp3', 'VI/CH/HTB.mp3', 'VI/CH/MNB.mp3', 'VI/CH/SNB.mp3', 'VI/CH/SRB.mp3', 'VI/CH/THB.mp3', 'VI/CH/Error.mp3'];
+    EN_dir = ['VI/EN/LS.mp3', 'VI/EN/LE2.mp3', 'VI/EN/LE3.mp3', 'VI/EN/LE4.mp3', 'VI/EN/LE5.mp3', 'VI/CH/SSCT.mp3', 'VI/EN/SSHT.mp3', 'VI/EN/SSMN.mp3', 'VI/EN/SSSN.mp3', 'VI/EN/SSSR.mp3', 'VI/EN/SSTH.mp3', 'VI/EN/SE.mp3', 'VI/EN/CTB.mp3', 'VI/EN/HTB.mp3', 'VI/EN/MNB.mp3', 'VI/EN/SNB.mp3', 'VI/EN/SRB.mp3', 'VI/EN/THB.mp3', 'VI/EN/Error.mp3'];
 
     for (i = 0; i < CH_dir.length; i++) {
         LoadSoundFile(CH_dir[i], 'CH', i);
@@ -543,11 +545,41 @@ function PlaySound(LANG, index) {
 
 function ReadNewBlock() {
     if (addnewblock) {
-        mainSeq = mainSeq + " " + detected_result;
-        addnewblock = false;
-        clear = false;
+        if (!seqPlayed) {
+            mainSeq = mainSeq + " " + detected_result;
+            addnewblock = false;
+            clear = false;
+        }
+        //  else {
+        //     //replace the branch to be played
+        //     ChangeBranchTBP();
+        // }
     }
 }
+
+// function ChangeBranchTBP() {
+//     ResetBranch();
+//     switch (detected_result) {
+//         case ("CTB"):
+//             cat_branch = true;
+//             break;
+//         case ("SRB"):
+//             cat_branch = true;
+//             break;
+//         case ("MNB"):
+//             cat_branch = true;
+//             break;
+//         case ("THB"):
+//             cat_branch = true;
+//             break;
+//         case ("HTB"):
+//             cat_branch = true;
+//             break;
+//     }
+//     //replace mainseq
+//     let findBranchIndex = mainSeq.indexOf("B");
+//     console.log(findBranchIndex);
+// }
 
 function ClearInput() {
     mainSeq = "";
@@ -558,6 +590,7 @@ function ClearInput() {
     melodySeq = [];
     clear = true;
     error_exist = false;
+    seqPlayed = false;
     BLOCKS_DETECTED = 0;
     console.log("Cleared!")
 }
@@ -930,6 +963,13 @@ function ERRORS(errorCode) {
             console.log("No branch is selected!\n請選擇分支！");
             break;
     }
+    let LANG = '';
+    if (VI_EN) {
+        LANG = 'EN'
+    } else if (VI_CH) {
+        LANG = 'CH';
+    }
+    PlaySound(LANG, 18);
 }
 
 
@@ -965,12 +1005,71 @@ function DescriSound(inputStr) {
         LANG = 'CH';
     }
     if (inputStr.includes("(")) {
-        PlaySound(LANG, 1);
+        PlaySound(LANG, 0);
     } else if (inputStr.includes(")")) {
-        PlaySound(LANG, 0);
+        let itr = inputStr.charAt(1);
+        switch (itr) {
+            case (2):
+                //twice
+                PlaySound(LANG, 1);
+                break;
+            case (3):
+                //three times
+                PlaySound(LANG, 2);
+                break;
+            case (4):
+                PlaySound(LANG, 3);
+                break;
+            case (5):
+                PlaySound(LANG, 4);
+                break;
+        }
+
     } else if (inputStr.includes("SS")) {
-        PlaySound(LANG, 0);
+        let itr = inputStr.slice(2, 4);
+        switch (itr) {
+            case ("CT"):
+                PlaySound(LANG, 5);
+                break;
+            case ("HT"):
+                PlaySound(LANG, 6);
+                break;
+            case ("MN"):
+                PlaySound(LANG, 7);
+                break;
+            case ("SN"):
+                PlaySound(LANG, 8);
+                break;
+            case ("SR"):
+                PlaySound(LANG, 9);
+                break;
+            case ("TH"):
+                PlaySound(LANG, 10);
+                break;
+        }
     } else if (inputStr.includes("SE")) {
-        PlaySound(LANG, 0);
+        PlaySound(LANG, 11);
+    } else if (inputStr.includes("B")) {
+        let itr = inputStr.slice(0, 2);
+        switch (itr) {
+            case ("CT"):
+                PlaySound(LANG, 12);
+                break;
+            case ("HT"):
+                PlaySound(LANG, 13);
+                break;
+            case ("MN"):
+                PlaySound(LANG, 14);
+                break;
+            case ("SN"):
+                PlaySound(LANG, 15);
+                break;
+            case ("SR"):
+                PlaySound(LANG, 16);
+                break;
+            case ("TH"):
+                PlaySound(LANG, 17);
+                break;
+        }
     }
 }
