@@ -422,6 +422,7 @@ function draw() {
         text("Please Scan Blocks To Start\n請掃描條形碼", 0, 10, windowWidth);
     }
 
+    //detect new block after 3 secs
     if (detected_result != "" && !addnewblock) {
         let isnum = /^\d+$/.test(detected_result);
         if (isnum) {
@@ -429,7 +430,7 @@ function draw() {
             let testDur = Number(String(detected_result).charAt(1));
             // TestSound(testNote, testDur);
             if (millis() > detectInterval) {
-                detectInterval = millis() + 2000;
+                detectInterval = millis() + 3000;
                 TestSound(testNote, testDur);
             }
             detected_result = "";
@@ -445,7 +446,7 @@ function draw() {
         }
     } else if (detected_result != "" && addnewblock) {
         if (millis() > detectIntervalAddlock) {
-            detectIntervalAddlock = millis() + 2000;
+            detectIntervalAddlock = millis() + 3000;
             background(240);
             textSize(15);
             textAlign(RIGHT);
@@ -1008,26 +1009,28 @@ function DescriSound(inputStr) {
         PlaySound(LANG, 0);
     } else if (inputStr.includes(")")) {
         let itr = inputStr.charAt(1);
+
         switch (itr) {
-            case (2):
+            case ("2"):
                 //twice
                 PlaySound(LANG, 1);
                 break;
-            case (3):
+            case ("3"):
                 //three times
                 PlaySound(LANG, 2);
                 break;
-            case (4):
+            case ("4"):
                 PlaySound(LANG, 3);
                 break;
-            case (5):
+            case ("5"):
+                console.log(itr);
                 PlaySound(LANG, 4);
                 break;
         }
 
     } else if (inputStr.includes("SS")) {
-        let itr = inputStr.slice(2, 4);
-        switch (itr) {
+        let index = inputStr.slice(2, 4);
+        switch (index) {
             case ("CT"):
                 PlaySound(LANG, 5);
                 break;
@@ -1050,8 +1053,8 @@ function DescriSound(inputStr) {
     } else if (inputStr.includes("SE")) {
         PlaySound(LANG, 11);
     } else if (inputStr.includes("B")) {
-        let itr = inputStr.slice(0, 2);
-        switch (itr) {
+        let selectedBranch = inputStr.slice(0, 2);
+        switch (selectedBranch) {
             case ("CT"):
                 PlaySound(LANG, 12);
                 break;
