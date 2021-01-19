@@ -327,12 +327,6 @@ var rawSplitSt = [];
 var note = [], duration = [], volume = [], melodySeq = [];
 let testSeq = [];
 
-let main_focused = false;
-let b1_focused = false;
-let b2_focused = false;
-let b3_focused = false;
-let b4_focused = false;
-
 let trigger = 0;
 let index = 0;
 let autoplay = false;
@@ -358,6 +352,7 @@ let thunder_branch = false;
 let moon_branch = false;
 let sun_branch = false;
 let star_branch = false;
+let branchOneScanned = false;
 let ct_str = "", ht_str = "", th_str = "", mn_str = "", sn_str = "", sr_str = "";
 let error_exist = false;
 let error_msg = "";
@@ -389,7 +384,6 @@ function setup() {
     addBlockBtn.position(windowWidth * 0.1, 340);
     addBlockBtn.size(windowWidth * 0.38, 80);
     addBlockBtn.style('font-size', '12px');
-    // addBlockBtn.style('Font Style Bold');
     addBlockBtn.mousePressed(Addnewblocks);
 
     endBtn = createButton('PLAY 播放');
@@ -445,7 +439,7 @@ function draw() {
             }
         }
     } else if (detected_result != "" && addnewblock) {
-        if (millis() > detectIntervalAddlock) {
+        if (millis() > detectIntervalAddlock && seqPlayed == false) {
             detectIntervalAddlock = millis() + 3000;
             background(240);
             textSize(15);
@@ -551,41 +545,68 @@ function ReadNewBlock() {
             addnewblock = false;
             clear = false;
         }
-        //  else {
-        //     //replace the branch to be played
-        //     ChangeBranchTBP();
-        // }
+        else if (seqPlayed) {
+            ChangeBranchTBP();
+            addnewblock = false;
+            clear = false;
+        }
     }
 }
 
-// function ChangeBranchTBP() {
-//     ResetBranch();
-//     switch (detected_result) {
-//         case ("CTB"):
-//             cat_branch = true;
-//             break;
-//         case ("SRB"):
-//             cat_branch = true;
-//             break;
-//         case ("MNB"):
-//             cat_branch = true;
-//             break;
-//         case ("THB"):
-//             cat_branch = true;
-//             break;
-//         case ("HTB"):
-//             cat_branch = true;
-//             break;
-//     }
-//     //replace mainseq
-//     let findBranchIndex = mainSeq.indexOf("B");
-//     console.log(findBranchIndex);
-// }
+//only works after the seq has been played
+function ChangeBranchTBP() {
+    if (detected_result.includes("B")) {
+        note = [];
+        duration = [];
+        melodySeq = [];
+        if (cat_branch) {
+            mainSeq = mainSeq.replace("CTB", detected_result);
+        } else if (heart_branch) {
+            mainSeq = mainSeq.replace("HTB", detected_result);
+        } else if (thunder_branch) {
+            mainSeq = mainSeq.replace("THB", detected_result);
+        } else if (moon_branch) {
+            mainSeq = mainSeq.replace("MNB", detected_result);
+        } else if (sun_branch) {
+            mainSeq = mainSeq.replace("SNB", detected_result);
+        } else if (star_branch) {
+            mainSeq = mainSeq.replace("SRB", detected_result);
+        }
+        console.log("Seq changed to: " + mainSeq);
+        ResetBranch();
+        switch (detected_result) {
+            case ("CTB"):
+                cat_branch = true;
+                break;
+            case ("HTB"):
+                heart_branch = true;
+                break;
+            case ("THB"):
+                thunder_branch = true;
+                break;
+            case ("MNB"):
+                moon_branch = true;
+                break;
+            case ("SNB"):
+                sun_branch = true;
+                break;
+            case ("SRB"):
+                star_branch = true;
+                break;
+        }
+    }
+}
 
 function ClearInput() {
     mainSeq = "";
     convertedSeq = "";
     detected_result = "";
+    ct_str = "";
+    ht_str = "";
+    th_str = "";
+    mn = "";
+    sn_st = "";
+    sr_str = "";
     note = [];
     duration = [];
     melodySeq = [];
@@ -597,8 +618,9 @@ function ClearInput() {
 }
 
 function Convert() {
-    if (mainSeq) {
+    if (mainSeq != "") {
         console.log("Scanned Blocks: " + mainSeq);
+        console.log("Converted: " + convertedSeq);
     }
     if (!convertedSeq) {
         ERRORS(3);
@@ -648,8 +670,6 @@ function ConvertMethod2(str) {
     // print(str.length);
     for (var i = 0; i < str.length; i++) {
         var theChar = str.charAt(i);
-        // print("visited");
-        // print(theChar);
         if (theChar == '(') {
             if (!str.includes(")")) {
                 ERRORS(1);
@@ -715,45 +735,45 @@ function DetectSwitch(branchID) {
     //alston. not using "else if" in case switches don't come in pair 20201105
     switch (branchID) {
         case ("CT"):
-            if (ct_str != "") {
+            if (ct_str != "" && cat_branch) {
                 InsertSwitch(ct_str);
             } else {
-                print("NO CAT BRANCH");
+                console.log("No cat branch OR Cat branch not selected!");
             }
             break;
         case ("HT"):
-            if (ht_str != "") {
+            if (ht_str != "" && heart_branch) {
                 InsertSwitch(ht_str);
             } else {
-                print("NO HEART BRANCH");
+                console.log("No heart branch OR Heart branch not selected!");
             }
             break;
         case ("TH"):
             if (th_str != "") {
                 InsertSwitch(th_str);
             } else {
-                print("NO THUNDER BRANCH");
+                console.log("No thunder branch OR Thunder branch not selected!");
             }
             break;
         case ("MN"):
             if (mn_str != "") {
                 InsertSwitch(mn_str);
             } else {
-                print("NO MOON BRANCH");
+                console.log("No moon branch OR Moon branch not selected!");
             }
             break;
         case ("SN"):
             if (sn_str != "") {
                 InsertSwitch(sn_str);
             } else {
-                print("NO SUN BRANCH");
+                console.log("No sun branch OR Sun branch not selected!");
             }
             break;
         case ("SR"):
             if (sr_str != "") {
                 InsertSwitch(sr_str);
             } else {
-                print("NO STAR BRANCH");
+                console.log("No star branch OR Star branch not selected!");
             }
             break;
     }
@@ -829,7 +849,7 @@ function PrintSeq() {
         }
         autoplay = true;
     }
-    mainSeq = "";
+    // mainSeq = "";
     convertedSeq = "";
     //alston. playing seq is conducted inside draw()
 }
@@ -847,77 +867,57 @@ function PlayNote(frequency, dur) {
 }
 
 function DetectBlock(scanned_str) {
-
-    let split_str = [];
-    split_str = scanned_str.split(" ");
+    let split_str = scanned_str.split(" ");
     const block_amount = split_str.length;
 
-    for (i = 0; i < block_amount; i++) {
+    for (i = 1; i < block_amount; i++) {
         if (split_str[i].includes("SS") || split_str[i].includes("SE")) {
             if (split_str[i].includes("SS")) {
-                if (mainSeq.includes("SE")) {
-                    const input_index = mainSeq.indexOf("SS");
-                    let branch_index = split_str[i].slice(2, 4);
-                    switch (branch_index) {
-                        case ("CT"):
-                            if (cat_branch) {
-                                ct_str = ExtractSwitchSeq("CT", input_index);
-                            }
-                            break;
-                        case ("HT"):
-                            if (heart_branch) {
-                                ht_str = ExtractSwitchSeq("HT", input_index);
-                            }
-                            break;
-                        case ("TH"):
-                            if (thunder_branch) {
-                                th_str = ExtractSwitchSeq("TH", input_index);
-                            }
-                            break;
-                        case ("MN"):
-                            if (moon_branch) {
-                                mn_str = ExtractSwitchSeq("MN", input_index);
-                            }
-                            break;
-                        case ("SN"):
-                            if (sun_branch) {
-                                sn_str = ExtractSwitchSeq("SN", input_index);
-                            }
-                            break;
-                        case ("SR"):
-                            if (star_branch) {
-                                sr_str = ExtractSwitchSeq("SR", input_index);
-                            }
-                            break;
-                        default:
-                            ERRORS(4);
-                    }
-                    i = split_str.indexOf("SE");
-                } else {
-                    ERRORS(0);
+                let branch_index = split_str[i].slice(2, 4);
+                // let input_index = mainSeq.indexOf("SS" + branch_index);
+                // console.log("index: " + input_index);
+                switch (branch_index) {
+                    case ("CT"):
+                        ct_str = ExtractSwitchSeq(branch_index);
+                        break;
+                    case ("HT"):
+                        ht_str = ExtractSwitchSeq(branch_index);
+                        break;
+                    case ("TH"):
+                        th_str = ExtractSwitchSeq(branch_index);
+                        break;
+                    case ("MN"):
+                        mn_str = ExtractSwitchSeq(branch_index);
+                        break;
+                    case ("SN"):
+                        sn_str = ExtractSwitchSeq(branch_index);
+                        break;
+                    case ("SR"):
+                        sr_str = ExtractSwitchSeq(branch_index);
+                        break;
+                    default:
+                        ERRORS(4);
                 }
-            } else if (split_str[i].includes('SE')) {
-                ResetBranch();
+                i = split_str.indexOf("SE", i);
             }
         } else if (split_str[i].includes("B")) {
-            let branch_tobeplayed = split_str[i].slice(0, 2);
-            switch (branch_tobeplayed) {
-                case ("CT"):
+            switch (split_str[i]) {
+                case ("CTB"):
                     cat_branch = true;
                     break;
-                case ("HT"):
+                case ("HTB"):
                     heart_branch = true;
                     break;
-                case ("TH"):
+                case ("THB"):
                     thunder_branch = true;
                     break;
-                case ("MN"):
+                case ("MNB"):
                     moon_branch = true;
                     break;
-                case ("SN"):
+                case ("SNB"):
                     sun_branch = true;
                     break;
-                case ("SR"):
+                case ("SRB"):
                     star_branch = true;
                     break;
             }
@@ -974,11 +974,14 @@ function ERRORS(errorCode) {
 }
 
 
-function ExtractSwitchSeq(searchID, inputIndex) {
+function ExtractSwitchSeq(searchID) {
     var startID = "SS" + searchID;
     var endID = "SE";
     var switchStartIndex = mainSeq.indexOf(startID) + 5;
-    var switchEndIndex = mainSeq.indexOf(endID) - 2;
+    var switchEndIndex = mainSeq.indexOf(endID, switchStartIndex) - 2;
+    if (switchEndIndex < 0) {
+        ERRORS(0);
+    }
     var switchStr = mainSeq.slice(switchStartIndex, switchEndIndex + 1);
     convertedSeq = convertedSeq + " " + String(searchID);
 
