@@ -438,7 +438,7 @@ function draw() {
                 detected_result = "";
             }
         }
-    } else if (detected_result != "" && addnewblock) {
+    } else if (detected_result.length > 0 && addnewblock) {
         if (millis() > detectIntervalAddlock) {
             detectIntervalAddlock = millis() + 3000;
             background(240);
@@ -455,12 +455,11 @@ function draw() {
     }
 
     if (!error_exist) {
-        if (note != 0) {
+        if (note.length > 0) {
             //alston. here is to play the whole seq
             if (autoplay && millis() > trigger) {
                 PlayNote(note[index], duration[index]);
                 trigger = millis() + duration[index];
-                // console.log(trigger);
                 index++;
             } else if (index >= note.length) {
                 autoplay = false;
@@ -554,7 +553,7 @@ function ReadNewBlock() {
 
 //only works after the seq has been played
 function ChangeBranchTBP() {
-    console.log("changing branch...");
+    console.log("Changing branch...");
     if (detected_result.includes("B")) {
         note = [];
         duration = [];
@@ -623,7 +622,7 @@ function Convert() {
         console.log("Scanned Blocks: " + mainSeq);
         console.log("Converted: " + convertedSeq);
     }
-    if (!convertedSeq) {
+    if (convertedSeq.length == 0) {
         ERRORS(3);
     } else {
         if (!convertedSeq.includes("(")) {
@@ -651,6 +650,7 @@ function Convert() {
         }
         if (!error_exist && note != 0) {
             console.log("PLAYED : " + melodySeq.length + " Notes.");
+            // console.log("noteL: " + note);
         }
         // print("OUTPUTS: ");
         // for (var i = 0; i < melodySeq.length; i++) {
@@ -842,6 +842,10 @@ function TestSound(inputNote, inputDur) {
 }
 
 function PrintSeq() {
+    convertedSeq = "";
+    note = [];
+    duration = [];
+    melodySeq = [];
     DetectBlock(mainSeq);
     Convert();
     if (!error_exist) {
@@ -851,10 +855,7 @@ function PrintSeq() {
         autoplay = true;
     }
     // mainSeq = "";
-    convertedSeq = "";
-    note = [];
-    duration = [];
-    melodySeq = [];
+
     seqPlayed = true;
     //alston. playing seq is conducted inside draw()
 }
