@@ -439,7 +439,7 @@ function draw() {
             }
         }
     } else if (detected_result != "" && addnewblock) {
-        if (millis() > detectIntervalAddlock && seqPlayed == false) {
+        if (millis() > detectIntervalAddlock) {
             detectIntervalAddlock = millis() + 3000;
             background(240);
             textSize(15);
@@ -466,7 +466,6 @@ function draw() {
                 autoplay = false;
                 index = 0;
             }
-            seqPlayed = true;
         }
     } else {
         background(240);
@@ -540,12 +539,12 @@ function PlaySound(LANG, index) {
 
 function ReadNewBlock() {
     if (addnewblock) {
-        if (!seqPlayed) {
+        if (seqPlayed == false) {
             mainSeq = mainSeq + " " + detected_result;
             addnewblock = false;
             clear = false;
         }
-        else if (seqPlayed) {
+        else {
             ChangeBranchTBP();
             addnewblock = false;
             clear = false;
@@ -555,6 +554,7 @@ function ReadNewBlock() {
 
 //only works after the seq has been played
 function ChangeBranchTBP() {
+    console.log("changing branch...");
     if (detected_result.includes("B")) {
         note = [];
         duration = [];
@@ -598,6 +598,7 @@ function ChangeBranchTBP() {
 }
 
 function ClearInput() {
+    ResetBranch();
     mainSeq = "";
     convertedSeq = "";
     detected_result = "";
@@ -649,7 +650,7 @@ function Convert() {
             }
         }
         if (!error_exist && note != 0) {
-            print("PLAYED : " + melodySeq.length + " Notes.");
+            console.log("PLAYED : " + melodySeq.length + " Notes.");
         }
         // print("OUTPUTS: ");
         // for (var i = 0; i < melodySeq.length; i++) {
@@ -749,28 +750,28 @@ function DetectSwitch(branchID) {
             }
             break;
         case ("TH"):
-            if (th_str != "") {
+            if (th_str != "" && thunder_branch) {
                 InsertSwitch(th_str);
             } else {
                 console.log("No thunder branch OR Thunder branch not selected!");
             }
             break;
         case ("MN"):
-            if (mn_str != "") {
+            if (mn_str != "" && moon_branch) {
                 InsertSwitch(mn_str);
             } else {
                 console.log("No moon branch OR Moon branch not selected!");
             }
             break;
         case ("SN"):
-            if (sn_str != "") {
+            if (sn_str != "" && sun_branch) {
                 InsertSwitch(sn_str);
             } else {
                 console.log("No sun branch OR Sun branch not selected!");
             }
             break;
         case ("SR"):
-            if (sr_str != "") {
+            if (sr_str != "" && star_branch) {
                 InsertSwitch(sr_str);
             } else {
                 console.log("No star branch OR Star branch not selected!");
@@ -851,6 +852,10 @@ function PrintSeq() {
     }
     // mainSeq = "";
     convertedSeq = "";
+    note = [];
+    duration = [];
+    melodySeq = [];
+    seqPlayed = true;
     //alston. playing seq is conducted inside draw()
 }
 
@@ -961,7 +966,8 @@ function ERRORS(errorCode) {
             error_exist = true;
             break;
         case (4):
-            console.log("No branch is selected!\n請選擇分支！");
+            error_msg = "No branch is selected!\n請選擇分支！";
+            error_exist = true;
             break;
     }
     let LANG = '';
