@@ -365,6 +365,7 @@ var audioBuffer_EN = [];
 var audioBuffer_CH = [];
 
 let seqPlayed = false;
+let showingMelody = "";
 
 
 InitAllVIs();
@@ -456,6 +457,8 @@ function draw() {
 
     if (!error_exist) {
         if (note.length > 0) {
+            // text("Number Musical Notations / 簡譜", 0, 190, windowWidth);
+            // text(convertedSeq)
             //alston. here is to play the whole seq
             if (autoplay && millis() > trigger) {
                 PlayNote(note[index], duration[index]);
@@ -654,7 +657,7 @@ function Convert() {
         }
         // print("OUTPUTS: ");
         // for (var i = 0; i < melodySeq.length; i++) {
-        //   print(melodySeq[i]);
+        //     print(melodySeq[i]);
         // }
     }
 }
