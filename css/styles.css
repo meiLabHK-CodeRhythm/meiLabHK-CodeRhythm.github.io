@@ -49,14 +49,17 @@ footer {
 
 #interactive.viewport {
   width: 1000px;
-  /* height: 200px; */
+  /* height: 640px; */
+  overflow: hidden;
 }
 
 
 #interactive.viewport canvas, video {
   float: center;
   width: 1000px;
+  transform: scale(2);
   /* height: 200px; */
+  
 }
 
 #interactive.viewport canvas.drawingBuffer, video.drawingBuffer {

@@ -248,10 +248,10 @@ $(function () {
                 }
             },
             area: { // defines rectangle of the detection/localization area
-                top: "10%",    // top offset
-                right: "20%",  // right offset
-                left: "20%",   // left offset
-                bottom: "10%"  // bottom offset
+                top: "20%",    // top offset
+                right: "30%",  // right offset
+                left: "30%",   // left offset
+                bottom: "20%"  // bottom offset
             },
             locator: {
                 patchSize: "medium",
