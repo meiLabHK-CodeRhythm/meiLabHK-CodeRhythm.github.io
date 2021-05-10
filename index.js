@@ -241,18 +241,24 @@ $(function () {
             inputStream: {
                 type: "LiveStream",
                 constraints: {
-                    width: { min: 1280 },
-                    height: { min: 720 },
+                    width: 800,
+                    height: { min: 100 },
                     facingMode: "environment",
                     aspectRatio: { min: 1, max: 2 }
                 }
+            },
+            area: { // defines rectangle of the detection/localization area
+                top: "10%",    // top offset
+                right: "20%",  // right offset
+                left: "20%",   // left offset
+                bottom: "10%"  // bottom offset
             },
             locator: {
                 patchSize: "medium",
                 halfSample: true
             },
             numOfWorkers: 1,
-            frequency: 10,
+            frequency: 5,
             decoder: {
                 readers: [{
                     format: "code_128_reader",
