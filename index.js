@@ -373,7 +373,7 @@ InitAllVIs();
 function setup() {
     // var w = window.innerWidth;
     // console.log("innerWidth " + w);
-    createCanvas(windowWidth, windowHeight - 400);
+    createCanvas(windowWidth, windowHeight - 300);
     background(240);
 
     // A triangle oscillator
@@ -402,7 +402,7 @@ function setup() {
 
 
     langBtn = createButton('EN/中');
-    langBtn.position(windowWidth * 0.75, windowHeight - 180);
+    langBtn.position(windowWidth * 0.75, windowHeight - 80);
     langBtn.size(windowWidth * 0.15, 30);
     langBtn.style('font-size', '10px');
     langBtn.mousePressed(ChangeVILan);
@@ -481,7 +481,7 @@ function draw() {
     textSize(15);
     textAlign(CENTER);
     textStyle(BOLD);
-    text("MEI Lab @SCM", 0, windowHeight - 440, windowWidth);
+    text("MEI Lab @SCM", 0, windowHeight - 340, windowWidth);
 }
 
 
