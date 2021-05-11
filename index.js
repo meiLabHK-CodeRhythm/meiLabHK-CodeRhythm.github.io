@@ -465,6 +465,7 @@ function draw() {
     if (!error_exist) {
         if (note.length > 0) {
             text("Numbered Musical Notations / 簡譜", 0, 190, windowWidth);
+            textStyle(NORMAL);
             text(displayed_notes, 0, 220, windowWidth)
             //alston. here is to play the whole seq
             if (autoplay && millis() > trigger) {
@@ -820,12 +821,6 @@ function GetSeq(digits) {
     let noteDur, noteCode;
     noteDur = int(digits % 10);
     noteCode = int(digits / 10);
-    switch (noteDur) {
-        case (1): duration.push(300); break;
-        case (2): duration.push(600); break;
-        case (3): duration.push(900); break;
-        // case (4): duration.push(1200); break;
-    }
     switch (noteCode) {
         case (1): note.push(261.63); melodySeq.push(1); break;
         case (2): note.push(293.67); melodySeq.push(2); break;
@@ -833,6 +828,13 @@ function GetSeq(digits) {
         case (4): note.push(349.23); melodySeq.push(4); break;
         case (5): note.push(392.00); melodySeq.push(5); break;
     }
+    switch (noteDur) {
+        case (1): duration.push(300); melodySeq.push("-"); break;
+        case (2): duration.push(600); melodySeq.push("--"); break;
+        case (3): duration.push(900); melodySeq.push("---"); break;
+        // case (4): duration.push(1200); break;
+    }
+
 }
 
 function TestSound(inputNote, inputDur) {
