@@ -43,14 +43,14 @@ footer {
 
 #container {
   width: 300px;
-  max-height: 40%;
+  max-height: 100%;
   margin: auto;
   /* padding: 10px; */
 }
 
 #interactive.viewport {
   width: 300px;
-  max-height: 40%;
+  max-height: 100%;
   overflow: hidden;
 }
 
@@ -58,7 +58,7 @@ footer {
 #interactive.viewport canvas, video {
   float: center;
   width: 300px;
-  max-height: 40%;
+  max-height: 100%;
   transform: scale(2);
   /* height: 200px; */
   
