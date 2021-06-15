@@ -11,7 +11,8 @@ Scan one barcode each time.
 **)2**  ')' for loop end. 1-4 for loop iteration.<br>
 
 **SCAN BOTH BRANCHES. CHANGE BRANCH SELECTION AFTER PLAYED**
-**SSCAT**  'SS' for switch start, CT for cat, HT for heart, TH for thunder, MN for moon, SN for sun, SR for star<br>
+**SSCT**  'SS' for switch start, CT for cat, HT for heart, TH for thunder, MN for moon, SR for star<br>
 **SE**  'SE' for switch end.<br>xi
 **CTB**  Indicates the branch to play. 
 
+To enable Debug mode, search for "debug" in index.js.
