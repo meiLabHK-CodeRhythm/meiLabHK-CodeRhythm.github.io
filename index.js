@@ -416,6 +416,9 @@ function setup() {
 
 function draw() {
 
+    //for debug mode only
+    // mainSeq = document.getElementById("deBug").value;
+
     if (clear) {
         background(240);
         textSize(15);
@@ -634,8 +637,8 @@ function Convert() {
         console.log("Scanned Blocks: " + mainSeq);
         console.log("Converted: " + convertedSeq);
     }
-    if (convertedSeq.length == 0) {
-        ERRORS(3);
+    if (convertedSeq.length == 0 && mainSeq == "") {
+        // ERRORS(3);
     } else {
         if (!convertedSeq.includes("(")) {
             rawSplitSt = split(convertedSeq, " ");
@@ -891,6 +894,7 @@ function DetectBlock(scanned_str) {
     let split_str = scanned_str.split(" ");
     const block_amount = split_str.length;
 
+    //for debug mode only. i set as 1 in normal mode.
     for (i = 1; i < block_amount; i++) {
         if (split_str[i].includes("SS") || split_str[i].includes("SE")) {
             if (split_str[i].includes("SS")) {
@@ -985,6 +989,10 @@ function ERRORS(errorCode) {
             error_msg = "No branch is selected!\n請選擇分支！";
             error_exist = true;
             break;
+        case (5):
+            error_msg = "asdasdasdasdasdasdasded!\n請選擇分支！";
+            error_exist = true;
+            break;
     }
     let LANG = '';
     if (VI_EN) {
@@ -1005,6 +1013,11 @@ function ExtractSwitchSeq(searchID) {
         ERRORS(0);
     }
     var switchStr = mainSeq.slice(switchStartIndex, switchEndIndex + 1);
+    if (switchStr.includes("(") && !switchStr.includes(")")) {
+        ERRORS(1);
+    } else if (!switchStr.includes("(") && switchStr.includes(")")) {
+        ERRORS(1);
+    }
     convertedSeq = convertedSeq + " " + String(searchID);
 
     return switchStr;
