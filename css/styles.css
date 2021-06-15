@@ -49,7 +49,7 @@ footer {
 
 #interactive.viewport {
   width: 300px;
-  max-height: 640px;
+  max-height: 40%;
   overflow: hidden;
 }
 
