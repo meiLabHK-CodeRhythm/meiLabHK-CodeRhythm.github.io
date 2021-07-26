@@ -832,9 +832,9 @@ function GetSeq(digits) {
         case (5): note.push(392.00); melodySeq.push(5); break;
     }
     switch (noteDur) {
-        case (1): duration.push(500); melodySeq.push("-"); break;
-        case (2): duration.push(1500); melodySeq.push("--"); break;
-        case (3): duration.push(3000); melodySeq.push("---"); break;
+        case (1): duration.push(400); melodySeq.push("-"); break;
+        case (2): duration.push(1200); melodySeq.push("--"); break;
+        case (3): duration.push(2000); melodySeq.push("---"); break;
         // case (4): duration.push(1200); break;
     }
 
