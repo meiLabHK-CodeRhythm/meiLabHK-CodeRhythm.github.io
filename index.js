@@ -850,9 +850,9 @@ function TestSound(inputNote, inputDur) {
         case (5): freq = 392.00; break;
     }
     switch (inputDur) {
-        case (1): dur = 500; break;
-        case (2): dur = 1500; break;
-        case (3): dur = 3000; break;
+        case (1): dur = 400; break;
+        case (2): dur = 1200; break;
+        case (3): dur = 2000; break;
     }
     PlayNote(freq, dur);
 }
