@@ -832,9 +832,9 @@ function GetSeq(digits) {
         case (5): note.push(392.00); melodySeq.push(5); break;
     }
     switch (noteDur) {
-        case (1): duration.push(400); melodySeq.push("-"); break;
-        case (2): duration.push(1200); melodySeq.push("--"); break;
-        case (3): duration.push(2000); melodySeq.push("---"); break;
+        case (1): duration.push(200); melodySeq.push("-"); break;
+        case (2): duration.push(500); melodySeq.push("--"); break;
+        case (3): duration.push(1000); melodySeq.push("---"); break;
         // case (4): duration.push(1200); break;
     }
 
@@ -850,9 +850,9 @@ function TestSound(inputNote, inputDur) {
         case (5): freq = 392.00; break;
     }
     switch (inputDur) {
-        case (1): dur = 400; break;
-        case (2): dur = 1200; break;
-        case (3): dur = 2000; break;
+        case (1): dur = 200; break;
+        case (2): dur = 500; break;
+        case (3): dur = 1000; break;
     }
     PlayNote(freq, dur);
 }
